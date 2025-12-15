@@ -1,190 +1,189 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zadania szachowe</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #222;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-    }
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .puzzle {
-      margin-bottom: 40px;
-    }
-
-    /* SZACHOWNICA */
-    .board {
-      display: grid;
-      grid-template-columns: repeat(8, 60px);
-      grid-template-rows: repeat(8, 60px);
-      border: 3px solid #333;
-      margin: 15px 0;
-    }
-    .square {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-      cursor: default;
-      user-select: none;
-    }
-    .white { background: #f0d9b5; }
-    .black { background: #b58863; }
-
-    button {
-      margin-top: 10px;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 5px;
-      background: #222;
-      color: #fff;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #444;
-    }
-    .solution {
-      display: none;
-      margin-top: 10px;
-      background: #dff0d8;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    footer {
-      text-align: center;
-      padding: 15px;
-      color: #777;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zadania szachowe z obrazkami figur</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: #222;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+    border: 3px solid #333;
+    margin: 15px 0;
+  }
+  .square {
+    width: 60px;
+    height: 60px;
+  }
+  .white {
+    background: #f0d9b5;
+  }
+  .black {
+    background: #b58863;
+  }
+  .piece {
+    width: 48px;
+    height: 48px;
+    pointer-events: none;
+    user-select: none;
+    margin: 6px auto;
+    display: block;
+  }
+  button {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 5px;
+    background: #222;
+    color: #fff;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #444;
+  }
+  .solution {
+    display: none;
+    margin-top: 10px;
+    background: #dff0d8;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  footer {
+    text-align: center;
+    padding: 15px;
+    color: #777;
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>♟️ Zadania Szachowe</h1>
-    <p>Ćwicz taktykę i popraw swoją grę</p>
-  </header>
+<header>
+  <h1>♟️ Zadania Szachowe</h1>
+  <p>Ćwicz taktykę i popraw swoją grę</p>
+</header>
 
-  <div class="container">
-    <div class="puzzle">
-      <h2>Zadanie 1: Mat w 1</h2>
-      <p>Białe zaczynają i dają mata.</p>
+<div class="container">
+  <div class="puzzle">
+    <h2>Zadanie 1: Mat w 1</h2>
+    <p>Białe zaczynają i dają mata.</p>
 
-      <div class="board">
-        <!-- 8 -->
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black">♚</div>
-        <div class="square white"></div>
+    <div class="board">
+      <!-- 8 -->
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg" alt="Czarny król" class="piece"></div>
+      <div class="square white"></div>
 
-        <!-- 7 -->
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
+      <!-- 7 -->
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
 
-        <!-- 6 -->
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
+      <!-- 6 -->
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
 
-        <!-- 5 -->
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white">♕</div>
-        <div class="square black"></div>
+      <!-- 5 -->
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt45.svg" alt="Biała hetman" class="piece"></div>
+      <div class="square black"></div>
 
-        <!-- 4 -->
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
+      <!-- 4 -->
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
 
-        <!-- 3 -->
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
+      <!-- 3 -->
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
 
-        <!-- 2 -->
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
+      <!-- 2 -->
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
 
-        <!-- 1 -->
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white"></div>
-        <div class="square black"></div>
-        <div class="square white">♔</div>
-        <div class="square black"></div>
-      </div>
-
-      <button onclick="toggleSolution('s1')">Pokaż rozwiązanie</button>
-      <div id="s1" class="solution">Qg7#</div>
+      <!-- 1 -->
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"></div>
+      <div class="square black"></div>
+      <div class="square white"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt45.svg" alt="Biały król" class="piece"></div>
+      <div class="square black"></div>
     </div>
+
+    <button onclick="toggleSolution('s1')">Pokaż rozwiązanie</button>
+    <div id="s1" class="solution">Qg7#</div>
   </div>
+</div>
 
-  <footer>
-    © 2025 Zadania Szachowe
-  </footer>
+<footer>
+  © 2025 Zadania Szachowe
+</footer>
 
-  <script>
-    function toggleSolution(id) {
-      const el = document.getElementById(id);
-      el.style.display = el.style.display === 'block' ? 'none' : 'block';
-    }
-  </script>
+<script>
+function toggleSolution(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+</script>
 </body>
 </html>
 
-  </script>
-</body>
-</html>
