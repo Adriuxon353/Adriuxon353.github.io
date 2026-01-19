@@ -3,187 +3,189 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Zadania szachowe z obrazkami figur</title>
+<title>Zadania szachowe</title>
+
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    background: #222;
-    color: white;
-    padding: 20px;
-    text-align: center;
-  }
-  .container {
-    max-width: 900px;
-    margin: 30px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  .board {
-    display: grid;
-    grid-template-columns: repeat(8, 60px);
-    grid-template-rows: repeat(8, 60px);
-    border: 3px solid #333;
-    margin: 15px 0;
-  }
-  .square {
-    width: 60px;
-    height: 60px;
-  }
-  .white {
-    background: #f0d9b5;
-  }
-  .black {
-    background: #b58863;
-  }
-  .piece {
-    width: 48px;
-    height: 48px;
-    pointer-events: none;
-    user-select: none;
-    margin: 6px auto;
-    display: block;
-  }
-  button {
-    margin-top: 10px;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 5px;
-    background: #222;
-    color: #fff;
-    cursor: pointer;
-  }
-  button:hover {
-    background: #444;
-  }
-  .solution {
-    display: none;
-    margin-top: 10px;
-    background: #dff0d8;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  footer {
-    text-align: center;
-    padding: 15px;
-    color: #777;
-  }
+:root {
+  --light: #f0d9b5;
+  --dark: #b58863;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #eee;
+}
+
+header {
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.15);
+}
+
+.board-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(40px, 60px));
+  grid-template-rows: repeat(8, minmax(40px, 60px));
+  border: 3px solid #333;
+}
+
+.square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.square.light { background: var(--light); }
+.square.dark { background: var(--dark); }
+
+.piece {
+  width: 85%;
+  height: 85%;
+  user-select: none;
+  pointer-events: none;
+}
+
+.coords {
+  position: absolute;
+  font-size: 12px;
+  color: #333;
+}
+
+.file {
+  bottom: -18px;
+}
+
+.rank {
+  left: -18px;
+}
+
+button {
+  margin-top: 1rem;
+  padding: .6rem 1.2rem;
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #444;
+}
+
+.solution {
+  display: none;
+  margin-top: 1rem;
+  background: #dff0d8;
+  padding: .8rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: #777;
+}
 </style>
 </head>
+
 <body>
+
 <header>
   <h1>♟️ Zadania Szachowe</h1>
   <p>Ćwicz taktykę i popraw swoją grę</p>
 </header>
 
 <div class="container">
-  <div class="puzzle">
-    <h2>Zadanie 1: Mat w 1</h2>
-    <p>Białe zaczynają i dają mata.</p>
+  <h2>Zadanie 1: Mat w 1</h2>
+  <p>Białe zaczynają i dają mata.</p>
 
-    <div class="board">
-      <!-- 8 -->
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg" alt="Czarny król" class="piece"></div>
-      <div class="square white"></div>
-
-      <!-- 7 -->
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-
-      <!-- 6 -->
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-
-      <!-- 5 -->
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt45.svg" alt="Biała hetman" class="piece"></div>
-      <div class="square black"></div>
-
-      <!-- 4 -->
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-
-      <!-- 3 -->
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-
-      <!-- 2 -->
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-
-      <!-- 1 -->
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"></div>
-      <div class="square black"></div>
-      <div class="square white"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt45.svg" alt="Biały król" class="piece"></div>
-      <div class="square black"></div>
-    </div>
-
-    <button onclick="toggleSolution('s1')">Pokaż rozwiązanie</button>
-    <div id="s1" class="solution">Qg7#</div>
+  <div class="board-wrapper">
+    <div id="board" class="board"></div>
   </div>
+
+  <button onclick="toggleSolution()">Pokaż rozwiązanie</button>
+  <div id="solution" class="solution">Qg7#</div>
 </div>
 
-<footer>
-  © 2025 Zadania Szachowe
-</footer>
+<footer>© 2025 Zadania Szachowe</footer>
 
 <script>
-function toggleSolution(id) {
-  const el = document.getElementById(id);
-  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+const pieces = {
+  "wK": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt45.svg",
+  "wQ": "https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt45.svg",
+  "bK": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg"
+};
+
+// prosta pozycja (bez FEN)
+const position = {
+  "g1": "wK",
+  "g5": "wQ",
+  "g8": "bK"
+};
+
+const board = document.getElementById("board");
+const files = ["a","b","c","d","e","f","g","h"];
+
+for (let rank = 8; rank >= 1; rank--) {
+  for (let file = 0; file < 8; file++) {
+    const square = document.createElement("div");
+    const isLight = (rank + file) % 2 === 0;
+    square.className = `square ${isLight ? "light" : "dark"}`;
+
+    const coord = files[file] + rank;
+    if (position[coord]) {
+      const img = document.createElement("img");
+      img.src = pieces[position[coord]];
+      img.className = "piece";
+      square.appendChild(img);
+    }
+
+    board.appendChild(square);
+  }
+}
+
+// oznaczenia
+files.forEach((f, i) => {
+  const el = document.createElement("div");
+  el.textContent = f;
+  el.className = "coords file";
+  el.style.left = `${i * 60 + 22}px`;
+  document.querySelector(".board-wrapper").appendChild(el);
+});
+
+for (let r = 8; r >= 1; r--) {
+  const el = document.createElement("div");
+  el.textContent = r;
+  el.className = "coords rank";
+  el.style.top = `${(8 - r) * 60 + 20}px`;
+  document.querySelector(".board-wrapper").appendChild(el);
+}
+
+function toggleSolution() {
+  const s = document.getElementById("solution");
+  s.style.display = s.style.display === "block" ? "none" : "block";
 }
 </script>
+
 </body>
 </html>
+
 
