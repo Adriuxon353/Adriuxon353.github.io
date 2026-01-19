@@ -1,92 +1,121 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Szachy – interaktywne</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interaktywna plansza szachowa z SVG</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-}
-
-.container {
-  max-width: 420px;
-  margin: 40px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  aspect-ratio: 1;
-  border: 3px solid #333;
-}
-
-.square {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.light { background: #f0d9b5; }
-.dark  { background: #b58863; }
-
-.piece {
-  width: 90%;
-  height: 90%;
-  cursor: grab;
-}
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+  }
+  .container {
+    max-width: 480px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    aspect-ratio: 1 / 1;
+    border: 3px solid #333;
+  }
+  .square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .light {
+    background: #f0d9b5;
+  }
+  .dark {
+    background: #b58863;
+  }
+  .piece {
+    width: 90%;
+    height: 90%;
+    cursor: grab;
+  }
 </style>
 </head>
-
 <body>
 
 <div class="container">
-  <h2>Interaktywna plansza (jak chess.com)</h2>
+  <h2>Interaktywna plansza szachowa (offline SVG)</h2>
   <div id="board" class="board"></div>
 </div>
 
 <script>
-// ===== SVG FIGURY (INLINE – 100% DZIAŁA) =====
-const SVG = {
-  K:`<svg viewBox="0 0 45 45"><path d="M22.5 11l-5 4h10zM12 37h21v-3H12z" fill="#fff" stroke="#000"/></svg>`,
-  Q:`<svg viewBox="0 0 45 45"><circle cx="12" cy="14" r="3"/><circle cx="22" cy="10" r="3"/><circle cx="32" cy="14" r="3"/><path d="M12 14l10 23h1l10-23" fill="#fff" stroke="#000"/></svg>`,
-  k:`<svg viewBox="0 0 45 45"><path d="M22.5 11l-5 4h10zM12 37h21v-3H12z" fill="#000"/></svg>`
+// SVG figur wbudowane w kod (białe i czarne)
+const svgPieces = {
+  K: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+       <g fill="none" stroke="#000" stroke-width="1.5" stroke-linejoin="round" >
+         <path d="M22.5 11v22" />
+         <path d="M15 18h15" />
+         <circle cx="22.5" cy="7.5" r="2.5" fill="#000"/>
+         <path d="M12 37h21v-3H12z" fill="#fff" />
+       </g>
+    </svg>`,
+  Q: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+        <g fill="none" stroke="#000" stroke-width="1.5" stroke-linejoin="round" >
+          <circle cx="12" cy="14" r="3" fill="#000"/>
+          <circle cx="22" cy="10" r="3" fill="#000"/>
+          <circle cx="32" cy="14" r="3" fill="#000"/>
+          <path d="M12 14l10 23h1l10-23" fill="#fff" />
+        </g>
+      </svg>`,
+  k: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+       <g fill="#000" stroke="#000" stroke-width="1.5" stroke-linejoin="round">
+         <path d="M22.5 11v22" />
+         <path d="M15 18h15" />
+         <circle cx="22.5" cy="7.5" r="2.5" fill="#fff"/>
+         <path d="M12 37h21v-3H12z" fill="#000" />
+       </g>
+    </svg>`,
+  q: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+        <g fill="#000" stroke="#000" stroke-width="1.5" stroke-linejoin="round" >
+          <circle cx="12" cy="14" r="3" fill="#fff"/>
+          <circle cx="22" cy="10" r="3" fill="#fff"/>
+          <circle cx="32" cy="14" r="3" fill="#fff"/>
+          <path d="M12 14l10 23h1l10-23" fill="#000" />
+        </g>
+      </svg>`
 };
 
-// ===== FEN =====
+// Przykładowy FEN do wczytania
 const fen = "6k1/8/8/6Q1/8/8/8/6K1 w - - 0 1";
 
 const board = document.getElementById("board");
+board.innerHTML = "";
+
 const rows = fen.split(" ")[0].split("/");
+const files = ["a","b","c","d","e","f","g","h"];
 
-// ===== RYSUJ PLANSZĘ =====
 for (let r = 0; r < 8; r++) {
-  let file = 0;
-  for (const c of rows[r]) {
-    if (isNaN(c)) {
-      const sq = createSquare(r, file);
-      const piece = document.createElement("div");
-      piece.className = "piece";
-      piece.innerHTML = SVG[c];
-      piece.draggable = true;
+  let fileIndex = 0;
+  for (const ch of rows[r]) {
+    if (isNaN(ch)) {
+      const sq = createSquare(r, fileIndex);
+      const pieceDiv = document.createElement("div");
+      pieceDiv.className = "piece";
+      pieceDiv.draggable = true;
+      pieceDiv.innerHTML = svgPieces[ch] || "";
 
-      piece.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", "");
-        dragged = piece;
+      // Drag and drop obsługa
+      pieceDiv.addEventListener("dragstart", e => {
+        dragged = pieceDiv;
       });
 
-      sq.appendChild(piece);
+      sq.appendChild(pieceDiv);
       board.appendChild(sq);
-      file++;
+      fileIndex++;
     } else {
-      for (let i = 0; i < c; i++) {
-        board.appendChild(createSquare(r, file++));
+      for (let i = 0; i < Number(ch); i++) {
+        board.appendChild(createSquare(r, fileIndex));
+        fileIndex++;
       }
     }
   }
@@ -94,20 +123,23 @@ for (let r = 0; r < 8; r++) {
 
 let dragged = null;
 
-function createSquare(r, f) {
-  const sq = document.createElement("div");
-  sq.className = "square " + ((r + f) % 2 ? "dark" : "light");
+function createSquare(row, col) {
+  const square = document.createElement("div");
+  square.className = "square " + ((row + col) % 2 === 0 ? "light" : "dark");
 
-  sq.addEventListener("dragover", e => e.preventDefault());
-  sq.addEventListener("drop", () => {
+  square.addEventListener("dragover", e => e.preventDefault());
+  square.addEventListener("drop", e => {
+    e.preventDefault();
     if (dragged) {
-      sq.innerHTML = "";
-      sq.appendChild(dragged);
+      // Usuwamy figurę z poprzedniego pola (bo draggable przenosi element)
+      // I dodajemy do pola docelowego
+      if (dragged.parentNode) dragged.parentNode.innerHTML = "";
+      square.appendChild(dragged);
       dragged = null;
     }
   });
 
-  return sq;
+  return square;
 }
 </script>
 
