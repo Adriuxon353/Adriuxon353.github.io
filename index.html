@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zadania szachowe – FEN</title>
+<title>Szachy – interaktywne</title>
 
 <style>
 body {
@@ -12,25 +12,18 @@ body {
   background: #f4f4f4;
 }
 
-header {
-  background: #222;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-}
-
 .container {
-  max-width: 900px;
-  margin: 30px auto;
+  max-width: 420px;
+  margin: 40px auto;
   background: #fff;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(8, min(10vw, 60px));
-  grid-template-rows: repeat(8, min(10vw, 60px));
+  grid-template-columns: repeat(8, 1fr);
+  aspect-ratio: 1;
   border: 3px solid #333;
 }
 
@@ -46,105 +39,75 @@ header {
 .piece {
   width: 90%;
   height: 90%;
-  user-select: none;
-  pointer-events: none;
-}
-
-button {
-  margin-top: 10px;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 5px;
-  background: #222;
-  color: #fff;
-  cursor: pointer;
-}
-button:hover { background: #444; }
-
-.solution {
-  display: none;
-  margin-top: 10px;
-  background: #dff0d8;
-  padding: 10px;
-  border-radius: 5px;
+  cursor: grab;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>♟️ Zadania Szachowe (FEN)</h1>
-</header>
-
 <div class="container">
-  <h2>Mat w 1</h2>
-
+  <h2>Interaktywna plansza (jak chess.com)</h2>
   <div id="board" class="board"></div>
-
-  <button onclick="toggleSolution()">Pokaż rozwiązanie</button>
-  <div id="solution" class="solution">Qg7#</div>
 </div>
 
 <script>
-// ====== GRAFIKA FIGUR (PEWNE SVG) ======
-const pieceImages = {
-  p: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/bp.png",
-  r: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/br.png",
-  n: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/bn.png",
-  b: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/bb.png",
-  q: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/bq.png",
-  k: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/bk.png",
-  P: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/wp.png",
-  R: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/wr.png",
-  N: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/wn.png",
-  B: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/wb.png",
-  Q: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/wq.png",
-  K: "https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/img/chesspieces/wikipedia/wk.png"
+// ===== SVG FIGURY (INLINE – 100% DZIAŁA) =====
+const SVG = {
+  K:`<svg viewBox="0 0 45 45"><path d="M22.5 11l-5 4h10zM12 37h21v-3H12z" fill="#fff" stroke="#000"/></svg>`,
+  Q:`<svg viewBox="0 0 45 45"><circle cx="12" cy="14" r="3"/><circle cx="22" cy="10" r="3"/><circle cx="32" cy="14" r="3"/><path d="M12 14l10 23h1l10-23" fill="#fff" stroke="#000"/></svg>`,
+  k:`<svg viewBox="0 0 45 45"><path d="M22.5 11l-5 4h10zM12 37h21v-3H12z" fill="#000"/></svg>`
 };
 
-// ====== FEN (MOŻESZ ZMIENIĆ) ======
+// ===== FEN =====
 const fen = "6k1/8/8/6Q1/8/8/8/6K1 w - - 0 1";
 
-// ====== RYSOWANIE PLANSZY ======
 const board = document.getElementById("board");
-board.innerHTML = "";
-
-const files = ["a","b","c","d","e","f","g","h"];
 const rows = fen.split(" ")[0].split("/");
 
+// ===== RYSUJ PLANSZĘ =====
 for (let r = 0; r < 8; r++) {
-  let fileIndex = 0;
-  for (const char of rows[r]) {
-    if (!isNaN(char)) {
-      fileIndex += parseInt(char);
+  let file = 0;
+  for (const c of rows[r]) {
+    if (isNaN(c)) {
+      const sq = createSquare(r, file);
+      const piece = document.createElement("div");
+      piece.className = "piece";
+      piece.innerHTML = SVG[c];
+      piece.draggable = true;
+
+      piece.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", "");
+        dragged = piece;
+      });
+
+      sq.appendChild(piece);
+      board.appendChild(sq);
+      file++;
     } else {
-      const square = createSquare(r, fileIndex);
-      const img = document.createElement("img");
-      img.src = pieceImages[char];
-      img.className = "piece";
-      square.appendChild(img);
-      board.appendChild(square);
-      fileIndex++;
+      for (let i = 0; i < c; i++) {
+        board.appendChild(createSquare(r, file++));
+      }
     }
   }
-  while (fileIndex < 8) {
-    board.appendChild(createSquare(r, fileIndex));
-    fileIndex++;
-  }
 }
 
-function createSquare(rank, file) {
+let dragged = null;
+
+function createSquare(r, f) {
   const sq = document.createElement("div");
-  const isLight = (rank + file) % 2 === 0;
-  sq.className = "square " + (isLight ? "light" : "dark");
-  return sq;
-}
+  sq.className = "square " + ((r + f) % 2 ? "dark" : "light");
 
-// ====== ROZWIĄZANIE ======
-function toggleSolution() {
-  const s = document.getElementById("solution");
-  s.style.display = s.style.display === "block" ? "none" : "block";
+  sq.addEventListener("dragover", e => e.preventDefault());
+  sq.addEventListener("drop", () => {
+    if (dragged) {
+      sq.innerHTML = "";
+      sq.appendChild(dragged);
+      dragged = null;
+    }
+  });
+
+  return sq;
 }
 </script>
 
