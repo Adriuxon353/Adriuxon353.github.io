@@ -2,8 +2,11 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Chess.com style – zadanie</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chessboard.js – przykład</title>
+
+<!-- chessboard.js CSS -->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.css"/>
 
 <style>
 body{
@@ -12,142 +15,54 @@ body{
   justify-content:center;
   align-items:center;
   height:100vh;
-  font-family:Arial, sans-serif;
+  margin:0;
 }
-
-.container{
-  background:#312e2b;
-  padding:20px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.6);
-}
-
-h1{
-  color:white;
-  text-align:center;
-  margin-bottom:15px;
-}
-
-.board{
-  display:grid;
-  grid-template-columns:repeat(8,70px);
-  grid-template-rows:repeat(8,70px);
-  border-radius:12px;
-  overflow:hidden;
-}
-
-.square{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.light{ background:#f0d9b5; }
-.dark{ background:#b58863; }
-
-.piece{
-  width:62px;
-  height:62px;
-  cursor:grab;
-}
-
-.square.highlight{
-  box-shadow: inset 0 0 0 4px rgba(255,215,0,.8);
-}
-
-button{
-  margin-top:15px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#81b64c;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
-}
-
-button:hover{ background:#9bd15a; }
-
-#solution{
-  display:none;
-  margin-top:10px;
-  text-align:center;
-  color:#9bd15a;
-  font-weight:bold;
+#board{
+  width:400px;
 }
 </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>♟ Mat w 1</h1>
-  <div id="board" class="board"></div>
-  <button onclick="toggleSolution()">Pokaż rozwiązanie</button>
-  <div id="solution">Qg7#</div>
-</div>
+
+<div id="board"></div>
+
+<!-- chess.js (logika) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+
+<!-- chessboard.js (plansza + figury) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.js"></script>
 
 <script>
-/* --- SVG FIGURY (INLINE – ZAWSZE DZIAŁAJĄ) --- */
-const pieces = {
-  K:`♔`, Q:`♕`, R:`♖`, B:`♗`, N:`♘`, P:`♙`,
-  k:`♚`, q:`♛`, r:`♜`, b:`♝`, n:`♞`, p:`♟`
-};
+const game = new Chess();
 
-const fen = "6k1/8/8/6Q1/8/8/8/6K1";
+// STARTOWY FEN (Twój przykład)
+const fen = "6k1/8/8/6Q1/8/8/8/6K1 w - - 0 1";
 
-const board = document.getElementById("board");
-let dragged = null;
+// KONFIGURACJA PLANSZY
+const board = Chessboard('board', {
+  draggable: true,
+  position: fen,
+  pieceTheme:
+    'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
 
-function drawBoard(fen){
-  board.innerHTML="";
-  const rows = fen.split("/");
-  for(let r=0;r<8;r++){
-    let col=0;
-    for(const c of rows[r]){
-      if(isNaN(c)){
-        const sq = createSquare(r,col);
-        const piece = document.createElement("div");
-        piece.className="piece";
-        piece.textContent = pieces[c];
-        piece.draggable=true;
-        piece.style.fontSize="56px";
-        piece.addEventListener("dragstart",()=>dragged=piece);
-        sq.appendChild(piece);
-        board.appendChild(sq);
-        col++;
-      }else{
-        for(let i=0;i<c;i++){
-          board.appendChild(createSquare(r,col));
-          col++;
-        }
-      }
+  onDrop: function (source, target) {
+    const move = game.move({
+      from: source,
+      to: target,
+      promotion: 'q'
+    });
+
+    // nielegalny ruch → cofamy
+    if (move === null) return 'snapback';
+
+    // MAT?
+    if (game.in_checkmate()) {
+      setTimeout(()=>alert("♟ MAT!"),100);
     }
   }
-}
-
-function createSquare(r,c){
-  const sq=document.createElement("div");
-  sq.className="square "+((r+c)%2?"dark":"light");
-  sq.addEventListener("dragover",e=>{e.preventDefault();sq.classList.add("highlight");});
-  sq.addEventListener("dragleave",()=>sq.classList.remove("highlight"));
-  sq.addEventListener("drop",()=>{
-    if(dragged){
-      sq.innerHTML="";
-      sq.appendChild(dragged);
-      sq.classList.remove("highlight");
-      dragged=null;
-    }
-  });
-  return sq;
-}
-
-function toggleSolution(){
-  const s=document.getElementById("solution");
-  s.style.display = s.style.display==="block"?"none":"block";
-}
-
-drawBoard(fen);
+});
 </script>
+
 </body>
 </html>
