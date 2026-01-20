@@ -2,22 +2,23 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Chess – GitHub Pages FIX FINAL</title>
+<title>Chessboard.js – przykład</title>
 
+<!-- chessboard.js CSS -->
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.css">
+  href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.css"/>
 
 <style>
-body {
+body{
   background:#262421;
-  margin:0;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
+  margin:0;
 }
-#board {
-  width: 400px;
+#board{
+  width:400px;
 }
 </style>
 </head>
@@ -26,31 +27,38 @@ body {
 
 <div id="board"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.js"></script>
+<!-- chess.js (logika) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+
+<!-- chessboard.js (plansza + figury) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.js"></script>
 
 <script>
-var game = new Chess();
+const game = new Chess();
 
-var board = Chessboard('board', {
+// STARTOWY FEN (Twój przykład)
+const fen = "6k1/8/8/6Q1/8/8/8/6K1 w - - 0 1";
+
+// KONFIGURACJA PLANSZY
+const board = Chessboard('board', {
   draggable: true,
-  position: '6k1/8/8/6Q1/8/8/8/6K1',
+  position: fen,
   pieceTheme:
     'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
 
   onDrop: function (source, target) {
-    var move = game.move({
+    const move = game.move({
       from: source,
       to: target,
       promotion: 'q'
     });
 
+    // nielegalny ruch → cofamy
     if (move === null) return 'snapback';
 
+    // MAT?
     if (game.in_checkmate()) {
-      setTimeout(function () {
-        alert('♟ MAT!');
-      }, 100);
+      setTimeout(()=>alert("♟ MAT!"),100);
     }
   }
 });
