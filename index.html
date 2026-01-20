@@ -2,9 +2,8 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Chess – GitHub Pages</title>
+<title>Chess – GitHub Pages FIX</title>
 
-<!-- chessboard.js CSS -->
 <link rel="stylesheet"
 href="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
 
@@ -17,8 +16,6 @@ body {
   align-items:center;
   height:100vh;
 }
-
-/* 🔴 TO JEST KLUCZOWE */
 #board {
   width: 400px;
 }
@@ -29,18 +26,32 @@ body {
 
 <div id="board"></div>
 
-<!-- JS MUSI BYĆ NA DOLE -->
-<script src="https://unpkg.com/chess.js@0.13.4/chess.min.js"></script>
+<!-- ✔ KOLEJNOŚĆ MA ZNACZENIE -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
 <script src="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 
 <script>
-const game = new Chess();
+var game = new Chess();
 
-const board = Chessboard('board', {
+var board = Chessboard('board', {
   draggable: true,
   position: '6k1/8/8/6Q1/8/8/8/6K1',
   pieceTheme:
-   'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+    'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+
+  onDrop: function (source, target) {
+    var move = game.move({
+      from: source,
+      to: target,
+      promotion: 'q'
+    });
+
+    if (move === null) return 'snapback';
+
+    if (game.in_checkmate()) {
+      setTimeout(() => alert('♟ MAT!'), 100);
+    }
+  }
 });
 </script>
 
