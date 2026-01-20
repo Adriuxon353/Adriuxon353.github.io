@@ -2,21 +2,26 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Legalne ruchy – chess.js</title>
+<title>Chess – GitHub Pages</title>
 
+<!-- chessboard.js CSS -->
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.css"/>
+href="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
 
 <style>
-body{
+body {
   background:#262421;
+  margin:0;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
-  margin:0;
 }
-#board{ width:420px; }
+
+/* 🔴 TO JEST KLUCZOWE */
+#board {
+  width: 400px;
+}
 </style>
 </head>
 
@@ -24,50 +29,18 @@ body{
 
 <div id="board"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.js"></script>
+<!-- JS MUSI BYĆ NA DOLE -->
+<script src="https://unpkg.com/chess.js@0.13.4/chess.min.js"></script>
+<script src="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 
 <script>
 const game = new Chess();
 
-// Twoja pozycja (MAT W 1)
-const fen = "6k1/8/8/6Q1/8/8/8/6K1 w - - 0 1";
-
 const board = Chessboard('board', {
   draggable: true,
-  position: fen,
+  position: '6k1/8/8/6Q1/8/8/8/6K1',
   pieceTheme:
-   'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
-
-  // ❌ blokuje podnoszenie złych figur
-  onDragStart: function (source, piece) {
-    if (game.game_over()) return false;
-
-    // tylko białe mogą się ruszać
-    if (piece.search(/^b/) !== -1) return false;
-  },
-
-  // ✅ legalność ruchu
-  onDrop: function (source, target) {
-    const move = game.move({
-      from: source,
-      to: target,
-      promotion: 'q'
-    });
-
-    // NIELEGALNY → wraca
-    if (move === null) return 'snapback';
-
-    // MAT?
-    if (game.in_checkmate()) {
-      setTimeout(() => alert("♟ MAT!"), 100);
-    }
-  },
-
-  // synchronizacja planszy z grą
-  onSnapEnd: function () {
-    board.position(game.fen());
-  }
+   'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
 });
 </script>
 
