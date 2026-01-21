@@ -122,15 +122,10 @@ header p {
 }
 
 .piece {
-  width: 85%;
-  height: 85%;
+  font-size: 48px;
   user-select: none;
   pointer-events: none;
-  transition: transform 0.1s;
-}
-
-.piece:hover {
-  transform: scale(1.05);
+  line-height: 1;
 }
 
 .coords {
@@ -212,14 +207,6 @@ button.secondary:hover {
   line-height: 1.6;
 }
 
-.puzzle-navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid #eee;
-}
-
 .stats {
   text-align: center;
   margin-top: 1rem;
@@ -246,6 +233,10 @@ footer {
   .board {
     grid-template-columns: repeat(8, 45px);
     grid-template-rows: repeat(8, 45px);
+  }
+  
+  .piece {
+    font-size: 36px;
   }
   
   header h1 {
@@ -304,18 +295,18 @@ footer {
 
 <script>
 const pieces = {
-  "wK": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt45.svg",
-  "wQ": "https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt45.svg",
-  "wR": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Chess_rlt45.svg",
-  "wB": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Chess_blt45.svg",
-  "wN": "https://upload.wikimedia.org/wikipedia/commons/2/28/Chess_nlt45.svg",
-  "wP": "https://upload.wikimedia.org/wikipedia/commons/0/04/Chess_plt45.svg",
-  "bK": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg",
-  "bQ": "https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg",
-  "bR": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Chess_rdt45.svg",
-  "bB": "https://upload.wikimedia.org/wikipedia/commons/8/81/Chess_bdt45.svg",
-  "bN": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Chess_ndt45.svg",
-  "bP": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Chess_pdt45.svg"
+  "wK": "♔",
+  "wQ": "♕",
+  "wR": "♖",
+  "wB": "♗",
+  "wN": "♘",
+  "wP": "♙",
+  "bK": "♚",
+  "bQ": "♛",
+  "bR": "♜",
+  "bB": "♝",
+  "bN": "♞",
+  "bP": "♟"
 };
 
 const puzzles = [
@@ -397,11 +388,10 @@ function renderBoard() {
       }
 
       if (position[coord]) {
-        const img = document.createElement("img");
-        img.src = pieces[position[coord]];
-        img.className = "piece";
-        img.alt = position[coord];
-        square.appendChild(img);
+        const piece = document.createElement("div");
+        piece.className = "piece";
+        piece.textContent = pieces[position[coord]];
+        square.appendChild(piece);
       }
 
       board.appendChild(square);
