@@ -133,20 +133,20 @@ header p {
   position: relative;
 }
 
-.board.disabled {
-  pointer-events: none;
-  opacity: 0.7;
-}
-
 .square {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: pointer;
 }
 
 .square.light { background: var(--light); }
 .square.dark { background: var(--dark); }
+
+.square.selected {
+  background: var(--highlight) !important;
+}
 
 .square.last-move-from {
   background: var(--move-from) !important;
@@ -156,46 +156,49 @@ header p {
   background: var(--move-to) !important;
 }
 
-.square.drag-over {
-  box-shadow: inset 0 0 0 3px var(--highlight);
-}
-
 .square.possible-move::after {
   content: '';
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background: rgba(0,0,0,0.15);
   border-radius: 50%;
   pointer-events: none;
+  z-index: 5;
 }
 
-.square.possible-capture::after {
+.square.possible-capture::before {
   content: '';
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 3px solid rgba(0,0,0,0.2);
+  border: 4px solid rgba(0,0,0,0.15);
   border-radius: 50%;
+  box-sizing: border-box;
   pointer-events: none;
+  z-index: 5;
 }
 
 .piece {
   font-size: 48px;
   user-select: none;
   line-height: 1;
-  cursor: grab;
-  transition: transform 0.1s;
+  cursor: pointer;
+  transition: transform 0.05s;
   z-index: 10;
+  position: relative;
 }
 
-.piece.dragging {
-  opacity: 0.5;
-  cursor: grabbing;
+.piece:hover {
+  transform: scale(1.05);
 }
 
-.piece:active {
-  cursor: grabbing;
+.piece.white-piece {
+  cursor: pointer;
+}
+
+.piece.black-piece {
+  cursor: default;
 }
 
 .coords {
@@ -263,14 +266,6 @@ button.secondary:hover:not(:disabled) {
   background: #5a6268;
 }
 
-button.success {
-  background: #28a745;
-}
-
-button.success:hover:not(:disabled) {
-  background: #218838;
-}
-
 .move-list {
   margin-top: 1rem;
   padding: 1rem;
@@ -328,6 +323,11 @@ footer {
   
   .piece {
     font-size: 36px;
+  }
+  
+  .square.possible-move::after {
+    width: 16px;
+    height: 16px;
   }
   
   header h1 {
@@ -398,15 +398,15 @@ const puzzles = [
     difficulty: "easy",
     initialPosition: {
       "e1": "wK",
-      "d8": "wQ",
+      "d1": "wQ",
       "e8": "bK",
       "f7": "bP",
       "g7": "bP"
     },
     solution: [
-      { from: "d8", to: "d7", piece: "wQ" }
+      { from: "d1", to: "d8", piece: "wQ" }
     ],
-    explanation: "Hetman na d7 daje mata - król na e8 jest zablokowany własnymi pionkami na f7 i g7."
+    explanation: "Hetman na d8 daje mata - król na e8 jest zablokowany własnymi pionkami."
   },
   {
     title: "Zadanie 2: Mat w 2",
@@ -454,13 +454,9 @@ let currentPosition = {};
 let moveHistory = [];
 let solutionIndex = 0;
 let isPlayerTurn = true;
+let selectedSquare = null;
 
 const files = ["a","b","c","d","e","f","g","h"];
-
-let draggedPiece = null;
-let draggedFrom = null;
-let touchStartX = 0;
-let touchStartY = 0;
 
 function resetPuzzle() {
   const puzzle = puzzles[currentPuzzle];
@@ -468,10 +464,10 @@ function resetPuzzle() {
   moveHistory = [];
   solutionIndex = 0;
   isPlayerTurn = true;
+  selectedSquare = null;
   updateGameStatus("Twoja kolej - wykonaj najlepszy ruch!", "");
   renderBoard();
   updateMoveHistory();
-  document.getElementById("board").classList.remove("disabled");
 }
 
 function renderBoard() {
@@ -507,134 +503,93 @@ function renderBoard() {
         if (coord === lastMove.to) square.classList.add("last-move-to");
       }
 
+      // Highlight selected square
+      if (selectedSquare === coord) {
+        square.classList.add("selected");
+      }
+
+      // Show possible moves
+      if (selectedSquare && isPlayerTurn) {
+        const possibleMoves = getPossibleMoves(selectedSquare);
+        if (possibleMoves.includes(coord)) {
+          if (currentPosition[coord]) {
+            square.classList.add("possible-capture");
+          } else {
+            square.classList.add("possible-move");
+          }
+        }
+      }
+
       if (currentPosition[coord]) {
         const piece = document.createElement("div");
-        piece.className = "piece";
-        piece.textContent = pieces[currentPosition[coord]];
-        piece.draggable = true;
+        const pieceType = currentPosition[coord];
+        piece.className = `piece ${pieceType.startsWith('w') ? 'white-piece' : 'black-piece'}`;
+        piece.textContent = pieces[pieceType];
         piece.dataset.coord = coord;
-        piece.dataset.piece = currentPosition[coord];
-        
-        // Only allow dragging white pieces on player's turn
-        const isWhitePiece = currentPosition[coord].startsWith('w');
-        if (!isWhitePiece || !isPlayerTurn) {
-          piece.draggable = false;
-          piece.style.cursor = "default";
-        } else {
-          piece.addEventListener("dragstart", handleDragStart);
-          piece.addEventListener("dragend", handleDragEnd);
-          piece.addEventListener("touchstart", handleTouchStart);
-          piece.addEventListener("touchmove", handleTouchMove);
-          piece.addEventListener("touchend", handleTouchEnd);
-        }
+        piece.dataset.piece = pieceType;
         
         square.appendChild(piece);
       }
       
-      square.addEventListener("dragover", handleDragOver);
-      square.addEventListener("drop", handleDrop);
-      square.addEventListener("dragleave", handleDragLeave);
+      // Add click handler to square
+      square.addEventListener("click", handleSquareClick);
 
       board.appendChild(square);
     }
   }
 }
 
-function handleDragStart(e) {
+function handleSquareClick(e) {
   if (!isPlayerTurn) return;
-  draggedPiece = e.target;
-  draggedFrom = e.target.dataset.coord;
-  e.target.classList.add("dragging");
-  e.dataTransfer.effectAllowed = "move";
-}
 
-function handleDragEnd(e) {
-  e.target.classList.remove("dragging");
-  document.querySelectorAll(".square").forEach(sq => {
-    sq.classList.remove("drag-over");
-  });
-}
+  const clickedSquare = e.currentTarget;
+  const coord = clickedSquare.dataset.coord;
+  const piece = currentPosition[coord];
 
-function handleDragOver(e) {
-  if (!isPlayerTurn) return;
-  e.preventDefault();
-  e.dataTransfer.dropEffect = "move";
-  e.currentTarget.classList.add("drag-over");
-}
-
-function handleDragLeave(e) {
-  e.currentTarget.classList.remove("drag-over");
-}
-
-function handleDrop(e) {
-  if (!isPlayerTurn) return;
-  e.preventDefault();
-  e.currentTarget.classList.remove("drag-over");
-  
-  const targetSquare = e.currentTarget;
-  const targetCoord = targetSquare.dataset.coord;
-  
-  if (draggedFrom !== targetCoord) {
-    makeMove(draggedFrom, targetCoord);
-  }
-  
-  draggedPiece = null;
-  draggedFrom = null;
-}
-
-function handleTouchStart(e) {
-  if (!isPlayerTurn) return;
-  const touch = e.touches[0];
-  draggedPiece = e.target;
-  draggedFrom = e.target.dataset.coord;
-  touchStartX = touch.clientX;
-  touchStartY = touch.clientY;
-  
-  e.target.classList.add("dragging");
-  e.preventDefault();
-}
-
-function handleTouchMove(e) {
-  if (!isPlayerTurn) return;
-  e.preventDefault();
-  const touch = e.touches[0];
-  
-  const elementUnderFinger = document.elementFromPoint(touch.clientX, touch.clientY);
-  document.querySelectorAll(".square").forEach(sq => sq.classList.remove("drag-over"));
-  
-  if (elementUnderFinger && elementUnderFinger.classList.contains("square")) {
-    elementUnderFinger.classList.add("drag-over");
-  } else if (elementUnderFinger && elementUnderFinger.closest(".square")) {
-    elementUnderFinger.closest(".square").classList.add("drag-over");
+  // If a square is already selected
+  if (selectedSquare) {
+    const possibleMoves = getPossibleMoves(selectedSquare);
+    
+    // If clicking on a possible move destination
+    if (possibleMoves.includes(coord)) {
+      makeMove(selectedSquare, coord);
+      selectedSquare = null;
+      renderBoard();
+      return;
+    }
+    
+    // If clicking on another white piece, select it instead
+    if (piece && piece.startsWith('w')) {
+      selectedSquare = coord;
+      renderBoard();
+      return;
+    }
+    
+    // Otherwise deselect
+    selectedSquare = null;
+    renderBoard();
+  } else {
+    // No square selected, select if white piece
+    if (piece && piece.startsWith('w')) {
+      selectedSquare = coord;
+      renderBoard();
+    }
   }
 }
 
-function handleTouchEnd(e) {
-  if (!isPlayerTurn) return;
-  e.preventDefault();
-  draggedPiece.classList.remove("dragging");
+function getPossibleMoves(fromCoord) {
+  const puzzle = puzzles[currentPuzzle];
+  const possibleMoves = [];
   
-  const touch = e.changedTouches[0];
-  const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
-  
-  let targetSquare = null;
-  if (targetElement && targetElement.classList.contains("square")) {
-    targetSquare = targetElement;
-  } else if (targetElement && targetElement.closest(".square")) {
-    targetSquare = targetElement.closest(".square");
-  }
-  
-  document.querySelectorAll(".square").forEach(sq => sq.classList.remove("drag-over"));
-  
-  if (targetSquare && targetSquare.dataset.coord) {
-    const targetCoord = targetSquare.dataset.coord;
-    if (draggedFrom !== targetCoord) {
-      makeMove(draggedFrom, targetCoord);
+  // Find all moves in solution that start from this square
+  for (let i = solutionIndex; i < puzzle.solution.length; i++) {
+    const move = puzzle.solution[i];
+    if (move.from === fromCoord && move.piece.startsWith('w')) {
+      possibleMoves.push(move.to);
     }
   }
   
-  draggedPiece = null;
-  draggedFrom = null;
+  return possibleMoves;
 }
 
 function makeMove(fromCoord, toCoord) {
@@ -658,6 +613,7 @@ function makeMove(fromCoord, toCoord) {
     });
     
     solutionIndex++;
+    selectedSquare = null;
     renderBoard();
     updateMoveHistory();
     
@@ -705,8 +661,10 @@ function makeOpponentMove() {
   if (solutionIndex >= puzzle.solution.length) {
     puzzleSolved();
   } else {
+    // Back to player's turn
     isPlayerTurn = true;
     updateGameStatus("Twoja kolej - wykonaj najlepszy ruch!", "");
+    renderBoard();
   }
 }
 
@@ -723,7 +681,6 @@ function puzzleSolved() {
   solvedPuzzles.add(currentPuzzle);
   updateGameStatus("🎉 Gratulacje! Zadanie rozwiązane poprawnie!", "success");
   document.getElementById("solvedCount").textContent = solvedPuzzles.size;
-  document.getElementById("board").classList.add("disabled");
 }
 
 function animateWrongMove() {
@@ -775,13 +732,9 @@ function showHint() {
   
   updateGameStatus(`💡 Podpowiedź: Przesuń ${getPieceName(nextMove.piece)} z ${nextMove.from} na ${nextMove.to}`, "");
   
-  // Highlight the piece and target square
-  document.querySelectorAll(".square").forEach(sq => {
-    if (sq.dataset.coord === nextMove.from || sq.dataset.coord === nextMove.to) {
-      sq.style.boxShadow = "inset 0 0 0 3px #ffeb3b";
-      setTimeout(() => { sq.style.boxShadow = ""; }, 2000);
-    }
-  });
+  // Auto-select the piece
+  selectedSquare = nextMove.from;
+  renderBoard();
 }
 
 function getPieceName(piece) {
