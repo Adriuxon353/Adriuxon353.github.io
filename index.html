@@ -1,63 +1,188 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>Chessboard.js – przykład</title>
-
-<!-- chessboard.js CSS -->
-<link rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.css"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zadania szachowe</title>
 
 <style>
-body{
-  background:#262421;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  margin:0;
+:root {
+  --light: #f0d9b5;
+  --dark: #b58863;
 }
-#board{
-  width:400px;
+
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #eee;
+}
+
+header {
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.15);
+}
+
+.board-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(40px, 60px));
+  grid-template-rows: repeat(8, minmax(40px, 60px));
+  border: 3px solid #333;
+}
+
+.square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.square.light { background: var(--light); }
+.square.dark { background: var(--dark); }
+
+.piece {
+  width: 85%;
+  height: 85%;
+  user-select: none;
+  pointer-events: none;
+}
+
+.coords {
+  position: absolute;
+  font-size: 12px;
+  color: #333;
+}
+
+.file {
+  bottom: -18px;
+}
+
+.rank {
+  left: -18px;
+}
+
+button {
+  margin-top: 1rem;
+  padding: .6rem 1.2rem;
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #444;
+}
+
+.solution {
+  display: none;
+  margin-top: 1rem;
+  background: #dff0d8;
+  padding: .8rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: #777;
 }
 </style>
 </head>
 
 <body>
 
-<div id="board"></div>
+<header>
+  <h1>♟️ Zadania Szachowe</h1>
+  <p>Ćwicz taktykę i popraw swoją grę</p>
+</header>
 
-<!-- chess.js (logika) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+<div class="container">
+  <h2>Zadanie 1: Mat w 1</h2>
+  <p>Białe zaczynają i dają mata.</p>
 
-<!-- chessboard.js (plansza + figury) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard.min.js"></script>
+  <div class="board-wrapper">
+    <div id="board" class="board"></div>
+  </div>
+
+  <button onclick="toggleSolution()">Pokaż rozwiązanie</button>
+  <div id="solution" class="solution">Qg7#</div>
+</div>
+
+<footer>© 2025 Zadania Szachowe</footer>
 
 <script>
-const game = new Chess();
+const pieces = {
+  "wK": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt45.svg",
+  "wQ": "https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt45.svg",
+  "bK": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg"
+};
 
-const fen = "6k1/8/8/6Q1/8/8/8/6K1 w - - 0 1";
+// prosta pozycja (bez FEN)
+const position = {
+  "g1": "wK",
+  "g5": "wQ",
+  "g8": "bK"
+};
 
-const board = Chessboard('board', {
-  draggable: true,
-  position: fen,
-  pieceTheme:
-    'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+const board = document.getElementById("board");
+const files = ["a","b","c","d","e","f","g","h"];
 
-  onDrop: function (source, target) {
-    const move = game.move({
-      from: source,
-      to: target,
-      promotion: 'q'
-    });
+for (let rank = 8; rank >= 1; rank--) {
+  for (let file = 0; file < 8; file++) {
+    const square = document.createElement("div");
+    const isLight = (rank + file) % 2 === 0;
+    square.className = `square ${isLight ? "light" : "dark"}`;
 
-    if (move === null) return 'snapback';
-
-    if (game.in_checkmate()) {
-      setTimeout(() => alert("♟ MAT!"), 100);
+    const coord = files[file] + rank;
+    if (position[coord]) {
+      const img = document.createElement("img");
+      img.src = pieces[position[coord]];
+      img.className = "piece";
+      square.appendChild(img);
     }
+
+    board.appendChild(square);
   }
+}
+
+// oznaczenia
+files.forEach((f, i) => {
+  const el = document.createElement("div");
+  el.textContent = f;
+  el.className = "coords file";
+  el.style.left = `${i * 60 + 22}px`;
+  document.querySelector(".board-wrapper").appendChild(el);
 });
+
+for (let r = 8; r >= 1; r--) {
+  const el = document.createElement("div");
+  el.textContent = r;
+  el.className = "coords rank";
+  el.style.top = `${(8 - r) * 60 + 20}px`;
+  document.querySelector(".board-wrapper").appendChild(el);
+}
+
+function toggleSolution() {
+  const s = document.getElementById("solution");
+  s.style.display = s.style.display === "block" ? "none" : "block";
+}
 </script>
 
 </body>
