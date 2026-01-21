@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -10,6 +9,9 @@
 :root {
   --light: #f0d9b5;
   --dark: #b58863;
+  --highlight: #baca44;
+  --move-from: #cdd26a;
+  --move-to: #aaa23a;
 }
 
 * {
@@ -86,6 +88,28 @@ header p {
 .difficulty.medium { background: #fff3cd; color: #856404; }
 .difficulty.hard { background: #f8d7da; color: #721c24; }
 
+.game-status {
+  text-align: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  transition: all 0.3s;
+}
+
+.game-status.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.game-status.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
 .board-container {
   display: flex;
   justify-content: center;
@@ -105,6 +129,13 @@ header p {
   grid-template-rows: repeat(8, 60px);
   border: 3px solid #333;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: transform 0.1s;
+  position: relative;
+}
+
+.board.disabled {
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 .square {
@@ -117,15 +148,54 @@ header p {
 .square.light { background: var(--light); }
 .square.dark { background: var(--dark); }
 
-.square.highlight {
-  box-shadow: inset 0 0 0 3px #ffeb3b;
+.square.last-move-from {
+  background: var(--move-from) !important;
+}
+
+.square.last-move-to {
+  background: var(--move-to) !important;
+}
+
+.square.drag-over {
+  box-shadow: inset 0 0 0 3px var(--highlight);
+}
+
+.square.possible-move::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.square.possible-capture::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid rgba(0,0,0,0.2);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .piece {
   font-size: 48px;
   user-select: none;
-  pointer-events: none;
   line-height: 1;
+  cursor: grab;
+  transition: transform 0.1s;
+  z-index: 10;
+}
+
+.piece.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.piece:active {
+  cursor: grabbing;
 }
 
 .coords {
@@ -133,6 +203,7 @@ header p {
   font-size: 11px;
   font-weight: bold;
   pointer-events: none;
+  z-index: 5;
 }
 
 .file-coord {
@@ -169,42 +240,62 @@ button {
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background: #5568d3;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
-button:active {
+button:active:not(:disabled) {
   transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 button.secondary {
   background: #6c757d;
 }
 
-button.secondary:hover {
+button.secondary:hover:not(:disabled) {
   background: #5a6268;
 }
 
-.solution {
-  display: none;
-  margin-top: 1.5rem;
-  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-  padding: 1.2rem;
+button.success {
+  background: #28a745;
+}
+
+button.success:hover:not(:disabled) {
+  background: #218838;
+}
+
+.move-list {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid #28a745;
+  min-height: 60px;
 }
 
-.solution h3 {
+.move-list h4 {
   margin: 0 0 0.5rem 0;
-  color: #155724;
+  color: #495057;
 }
 
-.solution p {
-  margin: 0.5rem 0;
-  color: #155724;
-  line-height: 1.6;
+.move-list .moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.move-list .move {
+  padding: 0.3rem 0.6rem;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-family: monospace;
 }
 
 .stats {
@@ -267,22 +358,23 @@ footer {
     </div>
   </div>
 
+  <div id="gameStatus" class="game-status">Twoja kolej - wykonaj najlepszy ruch!</div>
+
   <div class="board-container">
     <div class="board-wrapper">
       <div id="board" class="board"></div>
     </div>
   </div>
 
-  <div class="controls">
-    <button onclick="toggleSolution()">🔍 Pokaż rozwiązanie</button>
-    <button class="secondary" onclick="resetBoard()">🔄 Reset</button>
-    <button class="secondary" onclick="nextPuzzle()">➡️ Następne zadanie</button>
+  <div class="move-list">
+    <h4>📝 Historia ruchów:</h4>
+    <div id="moveHistory" class="moves"></div>
   </div>
 
-  <div id="solution" class="solution">
-    <h3>✅ Rozwiązanie:</h3>
-    <p id="solutionText"><strong>Qg7#</strong></p>
-    <p id="solutionExplanation">Hetman na g7 daje mata - król na g8 nie ma ucieczki, bo hetman kontroluje h8, h7 i f8, a własny hetman na g1 blokuje drogę ucieczki.</p>
+  <div class="controls">
+    <button id="hintBtn" onclick="showHint()">💡 Podpowiedź</button>
+    <button class="secondary" onclick="resetPuzzle()">🔄 Reset zadania</button>
+    <button class="secondary" onclick="nextPuzzle()">➡️ Następne zadanie</button>
   </div>
 
   <div class="stats">
@@ -295,18 +387,8 @@ footer {
 
 <script>
 const pieces = {
-  "wK": "♔",
-  "wQ": "♕",
-  "wR": "♖",
-  "wB": "♗",
-  "wN": "♘",
-  "wP": "♙",
-  "bK": "♚",
-  "bQ": "♛",
-  "bR": "♜",
-  "bB": "♝",
-  "bN": "♞",
-  "bP": "♟"
+  "wK": "♔", "wQ": "♕", "wR": "♖", "wB": "♗", "wN": "♘", "wP": "♙",
+  "bK": "♚", "bQ": "♛", "bR": "♜", "bB": "♝", "bN": "♞", "bP": "♟"
 };
 
 const puzzles = [
@@ -314,57 +396,87 @@ const puzzles = [
     title: "Zadanie 1: Mat w 1",
     description: "Białe zaczynają i dają mata.",
     difficulty: "easy",
-    position: {
-      "g1": "wK",
-      "g5": "wQ",
-      "g8": "bK"
+    initialPosition: {
+      "e1": "wK",
+      "d8": "wQ",
+      "e8": "bK",
+      "f7": "bP",
+      "g7": "bP"
     },
-    solution: "Qg7#",
-    explanation: "Hetman na g7 daje mata - król na g8 nie ma ucieczki, bo hetman kontroluje h8, h7 i f8, a własny hetman na g1 blokuje drogę ucieczki."
+    solution: [
+      { from: "d8", to: "d7", piece: "wQ" }
+    ],
+    explanation: "Hetman na d7 daje mata - król na e8 jest zablokowany własnymi pionkami na f7 i g7."
   },
   {
     title: "Zadanie 2: Mat w 2",
     description: "Białe zaczynają. Znajdź sekwencję matującą.",
     difficulty: "medium",
-    position: {
+    initialPosition: {
       "e1": "wK",
-      "d1": "wR",
+      "a1": "wR",
       "h1": "wR",
       "e8": "bK",
-      "a7": "bP",
-      "b7": "bP"
+      "f7": "bP",
+      "g7": "bP",
+      "h7": "bP"
     },
-    solution: "Rd8+ Kf7, Rh7#",
-    explanation: "1. Rd8+ wymusza Kf7 (jedyne pole). 2. Rh7# - wieża na h7 daje mata, król nie może uciec."
+    solution: [
+      { from: "a1", to: "a8", piece: "wR" },
+      { from: "e8", to: "f7", piece: "bK" },
+      { from: "h1", to: "h7", piece: "wR" }
+    ],
+    explanation: "1. Ra8+ wymusza Kf7 (jedyne pole). 2. Rh7# - mat!"
   },
   {
-    title: "Zadanie 3: Wygrana materialna",
-    description: "Białe wykonują ruch i wygrywają figurę.",
+    title: "Zadanie 3: Widelec",
+    description: "Białe wykonują widelec i wygrywają hetmana.",
     difficulty: "medium",
-    position: {
+    initialPosition: {
       "e1": "wK",
-      "d4": "wN",
-      "f3": "wB",
+      "f3": "wN",
       "e8": "bK",
-      "c6": "bQ",
-      "f6": "bN"
+      "d5": "bQ",
+      "f6": "bB"
     },
-    solution: "Ne6",
-    explanation: "Skoczek na e6 atakuje jednocześnie hetmana na c6 i króla na e8 (widelec). Czarne muszą odsunąć króla, a białe zbijają hetmana."
+    solution: [
+      { from: "f3", to: "g5", piece: "wN" },
+      { from: "e8", to: "d8", piece: "bK" },
+      { from: "g5", to: "d5", piece: "wN" }
+    ],
+    explanation: "Ng5 atakuje króla i hetmana. Po ruchu króla, zbijamy hetmana."
   }
 ];
 
 let currentPuzzle = 0;
 let solvedPuzzles = new Set();
-let solutionVisible = false;
+let currentPosition = {};
+let moveHistory = [];
+let solutionIndex = 0;
+let isPlayerTurn = true;
 
 const files = ["a","b","c","d","e","f","g","h"];
+
+let draggedPiece = null;
+let draggedFrom = null;
+let touchStartX = 0;
+let touchStartY = 0;
+
+function resetPuzzle() {
+  const puzzle = puzzles[currentPuzzle];
+  currentPosition = JSON.parse(JSON.stringify(puzzle.initialPosition));
+  moveHistory = [];
+  solutionIndex = 0;
+  isPlayerTurn = true;
+  updateGameStatus("Twoja kolej - wykonaj najlepszy ruch!", "");
+  renderBoard();
+  updateMoveHistory();
+  document.getElementById("board").classList.remove("disabled");
+}
 
 function renderBoard() {
   const board = document.getElementById("board");
   board.innerHTML = "";
-  
-  const position = puzzles[currentPuzzle].position;
 
   for (let rank = 8; rank >= 1; rank--) {
     for (let file = 0; file < 8; file++) {
@@ -373,6 +485,7 @@ function renderBoard() {
       square.className = `square ${isLight ? "light" : "dark"}`;
 
       const coord = files[file] + rank;
+      square.dataset.coord = coord;
       
       if (file === 7) {
         const rankCoord = document.createElement("div");
@@ -387,15 +500,259 @@ function renderBoard() {
         square.appendChild(fileCoord);
       }
 
-      if (position[coord]) {
+      // Highlight last move
+      if (moveHistory.length > 0) {
+        const lastMove = moveHistory[moveHistory.length - 1];
+        if (coord === lastMove.from) square.classList.add("last-move-from");
+        if (coord === lastMove.to) square.classList.add("last-move-to");
+      }
+
+      if (currentPosition[coord]) {
         const piece = document.createElement("div");
         piece.className = "piece";
-        piece.textContent = pieces[position[coord]];
+        piece.textContent = pieces[currentPosition[coord]];
+        piece.draggable = true;
+        piece.dataset.coord = coord;
+        piece.dataset.piece = currentPosition[coord];
+        
+        // Only allow dragging white pieces on player's turn
+        const isWhitePiece = currentPosition[coord].startsWith('w');
+        if (!isWhitePiece || !isPlayerTurn) {
+          piece.draggable = false;
+          piece.style.cursor = "default";
+        } else {
+          piece.addEventListener("dragstart", handleDragStart);
+          piece.addEventListener("dragend", handleDragEnd);
+          piece.addEventListener("touchstart", handleTouchStart);
+          piece.addEventListener("touchmove", handleTouchMove);
+          piece.addEventListener("touchend", handleTouchEnd);
+        }
+        
         square.appendChild(piece);
       }
+      
+      square.addEventListener("dragover", handleDragOver);
+      square.addEventListener("drop", handleDrop);
+      square.addEventListener("dragleave", handleDragLeave);
 
       board.appendChild(square);
     }
+  }
+}
+
+function handleDragStart(e) {
+  if (!isPlayerTurn) return;
+  draggedPiece = e.target;
+  draggedFrom = e.target.dataset.coord;
+  e.target.classList.add("dragging");
+  e.dataTransfer.effectAllowed = "move";
+}
+
+function handleDragEnd(e) {
+  e.target.classList.remove("dragging");
+  document.querySelectorAll(".square").forEach(sq => {
+    sq.classList.remove("drag-over");
+  });
+}
+
+function handleDragOver(e) {
+  if (!isPlayerTurn) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+  e.currentTarget.classList.add("drag-over");
+}
+
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove("drag-over");
+}
+
+function handleDrop(e) {
+  if (!isPlayerTurn) return;
+  e.preventDefault();
+  e.currentTarget.classList.remove("drag-over");
+  
+  const targetSquare = e.currentTarget;
+  const targetCoord = targetSquare.dataset.coord;
+  
+  if (draggedFrom !== targetCoord) {
+    makeMove(draggedFrom, targetCoord);
+  }
+  
+  draggedPiece = null;
+  draggedFrom = null;
+}
+
+function handleTouchStart(e) {
+  if (!isPlayerTurn) return;
+  const touch = e.touches[0];
+  draggedPiece = e.target;
+  draggedFrom = e.target.dataset.coord;
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  
+  e.target.classList.add("dragging");
+  e.preventDefault();
+}
+
+function handleTouchMove(e) {
+  if (!isPlayerTurn) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  
+  const elementUnderFinger = document.elementFromPoint(touch.clientX, touch.clientY);
+  document.querySelectorAll(".square").forEach(sq => sq.classList.remove("drag-over"));
+  
+  if (elementUnderFinger && elementUnderFinger.classList.contains("square")) {
+    elementUnderFinger.classList.add("drag-over");
+  } else if (elementUnderFinger && elementUnderFinger.closest(".square")) {
+    elementUnderFinger.closest(".square").classList.add("drag-over");
+  }
+}
+
+function handleTouchEnd(e) {
+  if (!isPlayerTurn) return;
+  e.preventDefault();
+  draggedPiece.classList.remove("dragging");
+  
+  const touch = e.changedTouches[0];
+  const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+  
+  let targetSquare = null;
+  if (targetElement && targetElement.classList.contains("square")) {
+    targetSquare = targetElement;
+  } else if (targetElement && targetElement.closest(".square")) {
+    targetSquare = targetElement.closest(".square");
+  }
+  
+  document.querySelectorAll(".square").forEach(sq => sq.classList.remove("drag-over"));
+  
+  if (targetSquare && targetSquare.dataset.coord) {
+    const targetCoord = targetSquare.dataset.coord;
+    if (draggedFrom !== targetCoord) {
+      makeMove(draggedFrom, targetCoord);
+    }
+  }
+  
+  draggedPiece = null;
+  draggedFrom = null;
+}
+
+function makeMove(fromCoord, toCoord) {
+  const piece = currentPosition[fromCoord];
+  if (!piece) return;
+
+  const puzzle = puzzles[currentPuzzle];
+  const expectedMove = puzzle.solution[solutionIndex];
+
+  // Check if this is the correct move
+  if (expectedMove.from === fromCoord && expectedMove.to === toCoord) {
+    // Correct move!
+    currentPosition[toCoord] = piece;
+    delete currentPosition[fromCoord];
+    
+    moveHistory.push({
+      from: fromCoord,
+      to: toCoord,
+      piece: piece,
+      notation: getPieceNotation(piece) + toCoord
+    });
+    
+    solutionIndex++;
+    renderBoard();
+    updateMoveHistory();
+    
+    // Check if puzzle is complete
+    if (solutionIndex >= puzzle.solution.length) {
+      puzzleSolved();
+    } else {
+      // Check if next move is opponent's
+      const nextMove = puzzle.solution[solutionIndex];
+      if (nextMove.piece.startsWith('b')) {
+        // Opponent's turn
+        isPlayerTurn = false;
+        updateGameStatus("Przeciwnik myśli...", "");
+        setTimeout(() => makeOpponentMove(), 800);
+      } else {
+        updateGameStatus("Świetnie! Wykonaj następny ruch.", "success");
+      }
+    }
+  } else {
+    // Wrong move
+    updateGameStatus("To nie jest najlepszy ruch! Spróbuj ponownie.", "error");
+    animateWrongMove();
+  }
+}
+
+function makeOpponentMove() {
+  const puzzle = puzzles[currentPuzzle];
+  const move = puzzle.solution[solutionIndex];
+  
+  currentPosition[move.to] = move.piece;
+  delete currentPosition[move.from];
+  
+  moveHistory.push({
+    from: move.from,
+    to: move.to,
+    piece: move.piece,
+    notation: getPieceNotation(move.piece) + move.to
+  });
+  
+  solutionIndex++;
+  renderBoard();
+  updateMoveHistory();
+  
+  // Check if puzzle is complete
+  if (solutionIndex >= puzzle.solution.length) {
+    puzzleSolved();
+  } else {
+    isPlayerTurn = true;
+    updateGameStatus("Twoja kolej - wykonaj najlepszy ruch!", "");
+  }
+}
+
+function getPieceNotation(piece) {
+  const notation = {
+    'wK': 'K', 'wQ': 'Q', 'wR': 'R', 'wB': 'B', 'wN': 'N', 'wP': '',
+    'bK': 'K', 'bQ': 'Q', 'bR': 'R', 'bB': 'B', 'bN': 'N', 'bP': ''
+  };
+  return notation[piece] || '';
+}
+
+function puzzleSolved() {
+  isPlayerTurn = false;
+  solvedPuzzles.add(currentPuzzle);
+  updateGameStatus("🎉 Gratulacje! Zadanie rozwiązane poprawnie!", "success");
+  document.getElementById("solvedCount").textContent = solvedPuzzles.size;
+  document.getElementById("board").classList.add("disabled");
+}
+
+function animateWrongMove() {
+  const board = document.getElementById("board");
+  board.style.transform = "translateX(-10px)";
+  setTimeout(() => { board.style.transform = "translateX(10px)"; }, 100);
+  setTimeout(() => { board.style.transform = "translateX(0)"; }, 200);
+}
+
+function updateGameStatus(message, type) {
+  const status = document.getElementById("gameStatus");
+  status.textContent = message;
+  status.className = "game-status";
+  if (type) status.classList.add(type);
+}
+
+function updateMoveHistory() {
+  const historyEl = document.getElementById("moveHistory");
+  historyEl.innerHTML = "";
+  
+  moveHistory.forEach((move, i) => {
+    const moveEl = document.createElement("span");
+    moveEl.className = "move";
+    moveEl.textContent = `${Math.floor(i/2) + 1}${i % 2 === 0 ? '.' : '...'} ${move.notation}`;
+    historyEl.appendChild(moveEl);
+  });
+  
+  if (moveHistory.length === 0) {
+    historyEl.innerHTML = '<span style="color: #999;">Brak ruchów</span>';
   }
 }
 
@@ -406,41 +763,45 @@ function updatePuzzleInfo() {
   document.getElementById("puzzleDifficulty").textContent = 
     puzzle.difficulty === "easy" ? "Łatwy" : puzzle.difficulty === "medium" ? "Średni" : "Trudny";
   document.getElementById("puzzleDifficulty").className = `difficulty ${puzzle.difficulty}`;
-  document.getElementById("solutionText").innerHTML = `<strong>${puzzle.solution}</strong>`;
-  document.getElementById("solutionExplanation").textContent = puzzle.explanation;
   document.getElementById("puzzleNumber").textContent = currentPuzzle + 1;
   document.getElementById("solvedCount").textContent = solvedPuzzles.size;
 }
 
-function toggleSolution() {
-  const s = document.getElementById("solution");
-  solutionVisible = !solutionVisible;
-  s.style.display = solutionVisible ? "block" : "none";
+function showHint() {
+  if (!isPlayerTurn) return;
   
-  if (solutionVisible) {
-    solvedPuzzles.add(currentPuzzle);
-    document.getElementById("solvedCount").textContent = solvedPuzzles.size;
-  }
+  const puzzle = puzzles[currentPuzzle];
+  const nextMove = puzzle.solution[solutionIndex];
+  
+  updateGameStatus(`💡 Podpowiedź: Przesuń ${getPieceName(nextMove.piece)} z ${nextMove.from} na ${nextMove.to}`, "");
+  
+  // Highlight the piece and target square
+  document.querySelectorAll(".square").forEach(sq => {
+    if (sq.dataset.coord === nextMove.from || sq.dataset.coord === nextMove.to) {
+      sq.style.boxShadow = "inset 0 0 0 3px #ffeb3b";
+      setTimeout(() => { sq.style.boxShadow = ""; }, 2000);
+    }
+  });
 }
 
-function resetBoard() {
-  solutionVisible = false;
-  document.getElementById("solution").style.display = "none";
-  renderBoard();
+function getPieceName(piece) {
+  const names = {
+    'wK': 'króla', 'wQ': 'hetmana', 'wR': 'wieżę', 'wB': 'gońca', 'wN': 'skoczka', 'wP': 'piona',
+    'bK': 'króla', 'bQ': 'hetmana', 'bR': 'wieżę', 'bB': 'gońca', 'bN': 'skoczka', 'bP': 'piona'
+  };
+  return names[piece] || 'figurę';
 }
 
 function nextPuzzle() {
   currentPuzzle = (currentPuzzle + 1) % puzzles.length;
-  solutionVisible = false;
-  document.getElementById("solution").style.display = "none";
-  renderBoard();
+  resetPuzzle();
   updatePuzzleInfo();
 }
 
-renderBoard();
+// Initialize
+resetPuzzle();
 updatePuzzleInfo();
 </script>
 
 </body>
 </html>
-```
