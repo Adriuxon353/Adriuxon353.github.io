@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -12,97 +12,250 @@
   --dark: #b58863;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: system-ui, Arial, sans-serif;
-  background: #eee;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
 header {
-  background: #222;
+  background: rgba(0,0,0,0.8);
   color: #fff;
   text-align: center;
-  padding: 1.5rem;
+  padding: 2rem 1rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+}
+
+header p {
+  margin: 0;
+  opacity: 0.9;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 2rem auto;
   background: #fff;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.15);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+.puzzle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.puzzle-info {
+  flex: 1;
+}
+
+.puzzle-info h2 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.puzzle-info p {
+  margin: 0;
+  color: #666;
+}
+
+.difficulty {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.difficulty.easy { background: #d4edda; color: #155724; }
+.difficulty.medium { background: #fff3cd; color: #856404; }
+.difficulty.hard { background: #f8d7da; color: #721c24; }
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
 }
 
 .board-wrapper {
   display: inline-block;
   position: relative;
+  padding: 20px;
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(8, minmax(40px, 60px));
-  grid-template-rows: repeat(8, minmax(40px, 60px));
+  grid-template-columns: repeat(8, 60px);
+  grid-template-rows: repeat(8, 60px);
   border: 3px solid #333;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .square {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .square.light { background: var(--light); }
 .square.dark { background: var(--dark); }
+
+.square.highlight {
+  box-shadow: inset 0 0 0 3px #ffeb3b;
+}
 
 .piece {
   width: 85%;
   height: 85%;
   user-select: none;
   pointer-events: none;
+  transition: transform 0.1s;
+}
+
+.piece:hover {
+  transform: scale(1.05);
 }
 
 .coords {
   position: absolute;
-  font-size: 12px;
-  color: #333;
+  font-size: 11px;
+  font-weight: bold;
+  pointer-events: none;
 }
 
-.file {
-  bottom: -18px;
+.file-coord {
+  bottom: 2px;
+  right: 3px;
 }
 
-.rank {
-  left: -18px;
+.rank-coord {
+  top: 2px;
+  left: 3px;
+}
+
+.square.light .coords { color: var(--dark); }
+.square.dark .coords { color: var(--light); }
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 button {
-  margin-top: 1rem;
-  padding: .6rem 1.2rem;
-  background: #222;
+  padding: 0.8rem 1.5rem;
+  background: #667eea;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 button:hover {
-  background: #444;
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button.secondary {
+  background: #6c757d;
+}
+
+button.secondary:hover {
+  background: #5a6268;
 }
 
 .solution {
   display: none;
+  margin-top: 1.5rem;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  padding: 1.2rem;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.solution h3 {
+  margin: 0 0 0.5rem 0;
+  color: #155724;
+}
+
+.solution p {
+  margin: 0.5rem 0;
+  color: #155724;
+  line-height: 1.6;
+}
+
+.puzzle-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #eee;
+}
+
+.stats {
+  text-align: center;
   margin-top: 1rem;
-  background: #dff0d8;
-  padding: .8rem;
-  border-radius: 6px;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stats span {
+  display: inline-block;
+  margin: 0 1rem;
   font-weight: bold;
+  color: #495057;
 }
 
 footer {
   text-align: center;
-  padding: 1rem;
-  color: #777;
+  padding: 2rem 1rem;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .board {
+    grid-template-columns: repeat(8, 45px);
+    grid-template-rows: repeat(8, 45px);
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  .container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
 }
 </style>
 </head>
@@ -115,76 +268,189 @@ footer {
 </header>
 
 <div class="container">
-  <h2>Zadanie 1: Mat w 1</h2>
-  <p>Białe zaczynają i dają mata.</p>
-
-  <div class="board-wrapper">
-    <div id="board" class="board"></div>
+  <div class="puzzle-header">
+    <div class="puzzle-info">
+      <h2 id="puzzleTitle">Zadanie 1: Mat w 1</h2>
+      <p id="puzzleDescription">Białe zaczynają i dają mata.</p>
+      <span class="difficulty easy" id="puzzleDifficulty">Łatwy</span>
+    </div>
   </div>
 
-  <button onclick="toggleSolution()">Pokaż rozwiązanie</button>
-  <div id="solution" class="solution">Qg7#</div>
+  <div class="board-container">
+    <div class="board-wrapper">
+      <div id="board" class="board"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button onclick="toggleSolution()">🔍 Pokaż rozwiązanie</button>
+    <button class="secondary" onclick="resetBoard()">🔄 Reset</button>
+    <button class="secondary" onclick="nextPuzzle()">➡️ Następne zadanie</button>
+  </div>
+
+  <div id="solution" class="solution">
+    <h3>✅ Rozwiązanie:</h3>
+    <p id="solutionText"><strong>Qg7#</strong></p>
+    <p id="solutionExplanation">Hetman na g7 daje mata - król na g8 nie ma ucieczki, bo hetman kontroluje h8, h7 i f8, a własny hetman na g1 blokuje drogę ucieczki.</p>
+  </div>
+
+  <div class="stats">
+    <span>📊 Zadanie: <span id="puzzleNumber">1</span> / 3</span>
+    <span>✅ Rozwiązane: <span id="solvedCount">0</span></span>
+  </div>
 </div>
 
-<footer>© 2025 Zadania Szachowe</footer>
+<footer>© 2025 Zadania Szachowe | Ucz się i rozwijaj swoje umiejętności</footer>
 
 <script>
 const pieces = {
   "wK": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Chess_klt45.svg",
   "wQ": "https://upload.wikimedia.org/wikipedia/commons/4/49/Chess_qlt45.svg",
-  "bK": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg"
+  "wR": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Chess_rlt45.svg",
+  "wB": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Chess_blt45.svg",
+  "wN": "https://upload.wikimedia.org/wikipedia/commons/2/28/Chess_nlt45.svg",
+  "wP": "https://upload.wikimedia.org/wikipedia/commons/0/04/Chess_plt45.svg",
+  "bK": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg",
+  "bQ": "https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg",
+  "bR": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Chess_rdt45.svg",
+  "bB": "https://upload.wikimedia.org/wikipedia/commons/8/81/Chess_bdt45.svg",
+  "bN": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Chess_ndt45.svg",
+  "bP": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Chess_pdt45.svg"
 };
 
-// prosta pozycja (bez FEN)
-const position = {
-  "g1": "wK",
-  "g5": "wQ",
-  "g8": "bK"
-};
+const puzzles = [
+  {
+    title: "Zadanie 1: Mat w 1",
+    description: "Białe zaczynają i dają mata.",
+    difficulty: "easy",
+    position: {
+      "g1": "wK",
+      "g5": "wQ",
+      "g8": "bK"
+    },
+    solution: "Qg7#",
+    explanation: "Hetman na g7 daje mata - król na g8 nie ma ucieczki, bo hetman kontroluje h8, h7 i f8, a własny hetman na g1 blokuje drogę ucieczki."
+  },
+  {
+    title: "Zadanie 2: Mat w 2",
+    description: "Białe zaczynają. Znajdź sekwencję matującą.",
+    difficulty: "medium",
+    position: {
+      "e1": "wK",
+      "d1": "wR",
+      "h1": "wR",
+      "e8": "bK",
+      "a7": "bP",
+      "b7": "bP"
+    },
+    solution: "Rd8+ Kf7, Rh7#",
+    explanation: "1. Rd8+ wymusza Kf7 (jedyne pole). 2. Rh7# - wieża na h7 daje mata, król nie może uciec."
+  },
+  {
+    title: "Zadanie 3: Wygrana materialna",
+    description: "Białe wykonują ruch i wygrywają figurę.",
+    difficulty: "medium",
+    position: {
+      "e1": "wK",
+      "d4": "wN",
+      "f3": "wB",
+      "e8": "bK",
+      "c6": "bQ",
+      "f6": "bN"
+    },
+    solution: "Ne6",
+    explanation: "Skoczek na e6 atakuje jednocześnie hetmana na c6 i króla na e8 (widelec). Czarne muszą odsunąć króla, a białe zbijają hetmana."
+  }
+];
 
-const board = document.getElementById("board");
+let currentPuzzle = 0;
+let solvedPuzzles = new Set();
+let solutionVisible = false;
+
 const files = ["a","b","c","d","e","f","g","h"];
 
-for (let rank = 8; rank >= 1; rank--) {
-  for (let file = 0; file < 8; file++) {
-    const square = document.createElement("div");
-    const isLight = (rank + file) % 2 === 0;
-    square.className = `square ${isLight ? "light" : "dark"}`;
+function renderBoard() {
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  
+  const position = puzzles[currentPuzzle].position;
 
-    const coord = files[file] + rank;
-    if (position[coord]) {
-      const img = document.createElement("img");
-      img.src = pieces[position[coord]];
-      img.className = "piece";
-      square.appendChild(img);
+  for (let rank = 8; rank >= 1; rank--) {
+    for (let file = 0; file < 8; file++) {
+      const square = document.createElement("div");
+      const isLight = (rank + file) % 2 === 0;
+      square.className = `square ${isLight ? "light" : "dark"}`;
+
+      const coord = files[file] + rank;
+      
+      if (file === 7) {
+        const rankCoord = document.createElement("div");
+        rankCoord.className = "coords rank-coord";
+        rankCoord.textContent = rank;
+        square.appendChild(rankCoord);
+      }
+      if (rank === 1) {
+        const fileCoord = document.createElement("div");
+        fileCoord.className = "coords file-coord";
+        fileCoord.textContent = files[file];
+        square.appendChild(fileCoord);
+      }
+
+      if (position[coord]) {
+        const img = document.createElement("img");
+        img.src = pieces[position[coord]];
+        img.className = "piece";
+        img.alt = position[coord];
+        square.appendChild(img);
+      }
+
+      board.appendChild(square);
     }
-
-    board.appendChild(square);
   }
 }
 
-// oznaczenia
-files.forEach((f, i) => {
-  const el = document.createElement("div");
-  el.textContent = f;
-  el.className = "coords file";
-  el.style.left = `${i * 60 + 22}px`;
-  document.querySelector(".board-wrapper").appendChild(el);
-});
-
-for (let r = 8; r >= 1; r--) {
-  const el = document.createElement("div");
-  el.textContent = r;
-  el.className = "coords rank";
-  el.style.top = `${(8 - r) * 60 + 20}px`;
-  document.querySelector(".board-wrapper").appendChild(el);
+function updatePuzzleInfo() {
+  const puzzle = puzzles[currentPuzzle];
+  document.getElementById("puzzleTitle").textContent = puzzle.title;
+  document.getElementById("puzzleDescription").textContent = puzzle.description;
+  document.getElementById("puzzleDifficulty").textContent = 
+    puzzle.difficulty === "easy" ? "Łatwy" : puzzle.difficulty === "medium" ? "Średni" : "Trudny";
+  document.getElementById("puzzleDifficulty").className = `difficulty ${puzzle.difficulty}`;
+  document.getElementById("solutionText").innerHTML = `<strong>${puzzle.solution}</strong>`;
+  document.getElementById("solutionExplanation").textContent = puzzle.explanation;
+  document.getElementById("puzzleNumber").textContent = currentPuzzle + 1;
+  document.getElementById("solvedCount").textContent = solvedPuzzles.size;
 }
 
 function toggleSolution() {
   const s = document.getElementById("solution");
-  s.style.display = s.style.display === "block" ? "none" : "block";
+  solutionVisible = !solutionVisible;
+  s.style.display = solutionVisible ? "block" : "none";
+  
+  if (solutionVisible) {
+    solvedPuzzles.add(currentPuzzle);
+    document.getElementById("solvedCount").textContent = solvedPuzzles.size;
+  }
 }
+
+function resetBoard() {
+  solutionVisible = false;
+  document.getElementById("solution").style.display = "none";
+  renderBoard();
+}
+
+function nextPuzzle() {
+  currentPuzzle = (currentPuzzle + 1) % puzzles.length;
+  solutionVisible = false;
+  document.getElementById("solution").style.display = "none";
+  renderBoard();
+  updatePuzzleInfo();
+}
+
+renderBoard();
+updatePuzzleInfo();
 </script>
 
 </body>
 </html>
+```
