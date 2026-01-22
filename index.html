@@ -3000,3 +3000,750 @@ const PUZZLES = [
     position: {
       e1: 'wK', d1: 'wQ', f1: 'wB', b1: 'wN', g1: 'wN',
       e8: 'bK', d8: 'bQ', f8: 'bB', f6: 'bN', g8: 'bN', e5: 'bP'
+        ```html
+},
+    solution: ['Nxe5'],
+    toMove: 'white',
+    explanation: "Skoczek bije piona wykorzystując słabą obronę. Czarne tracą materiał."
+  },
+  {
+    id: 31,
+    title: "Gra o opozycję",
+    description: "Wygraj końcówkę przez opozycję!",
+    difficulty: "hard",
+    rating: 1800,
+    tags: ["opposition", "endgame", "king"],
+    position: {
+      e4: 'wK', e5: 'wP',
+      e6: 'bK'
+    },
+    solution: ['Kd5'],
+    toMove: 'white',
+    explanation: "Król zajmuje opozycję i przecina drogę czarnemu królowi. Pion promuje."
+  },
+  {
+    id: 32,
+    title: "Cios podwójny",
+    description: "Zadaj dwa zagrożenia jednocześnie!",
+    difficulty: "medium",
+    rating: 1550,
+    tags: ["double-threat", "tactic"],
+    position: {
+      e1: 'wK', d3: 'wQ', f1: 'wR',
+      e8: 'bK', d8: 'bR', f8: 'bB'
+    },
+    solution: ['Qd7'],
+    toMove: 'white',
+    explanation: "Hetman atakuje wieżę i grozi matem na e8."
+  },
+  {
+    id: 33,
+    title: "Pułapka na hetmana",
+    description: "Złap hetmana przeciwnika!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["trap", "queen"],
+    position: {
+      e1: 'wK', d1: 'wR', c3: 'wN',
+      e8: 'bK', d4: 'bQ', d8: 'bR'
+    },
+    solution: ['Nb5'],
+    toMove: 'white',
+    explanation: "Skoczek atakuje hetmana, który nie ma dobrego pola."
+  },
+  {
+    id: 34,
+    title: "Wykorzystaj słabą ósmą linię",
+    description: "Inwazja na ósmą linię!",
+    difficulty: "easy",
+    rating: 1300,
+    tags: ["back-rank", "mate"],
+    position: {
+      g1: 'wK', a1: 'wR', f2: 'wP', g2: 'wP', h2: 'wP',
+      g8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Ra8'],
+    toMove: 'white',
+    explanation: "Wieża na ósmej linii daje mata. Król nie może uciec."
+  },
+  {
+    id: 35,
+    title: "Taktyka w końcówce",
+    description: "Precyzja w końcówce wieżowej!",
+    difficulty: "hard",
+    rating: 1700,
+    tags: ["endgame", "rook"],
+    position: {
+      a1: 'wK', h1: 'wR', a2: 'wP',
+      a8: 'bK', a7: 'bP', h8: 'bR'
+    },
+    solution: ['Rh8', 'Rxa7'],
+    toMove: 'white',
+    explanation: "1. Rh8+ Kb7 2. Rh7+ wygrywa piona i partię."
+  },
+  {
+    id: 36,
+    title: "Atak na króla bez hetmanów",
+    description: "Mat bez hetmanów jest możliwy!",
+    difficulty: "medium",
+    rating: 1600,
+    tags: ["mate", "middlegame"],
+    position: {
+      g1: 'wK', d1: 'wR', f1: 'wR', c4: 'wB',
+      e8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP', a8: 'bR'
+    },
+    solution: ['Rd8', 'Rfd1'],
+    toMove: 'white',
+    explanation: "Wieże na linii d matują króla. 1. Rd8+ Rxd8 2. Rxd8#"
+  },
+  {
+    id: 37,
+    title: "Zdwojone wieże",
+    description: "Potęga zdwojonych wież!",
+    difficulty: "easy",
+    rating: 1250,
+    tags: ["rook", "battery"],
+    position: {
+      a1: 'wK', d1: 'wR', d2: 'wR',
+      e8: 'bK', d8: 'bR'
+    },
+    solution: ['Rxd8'],
+    toMove: 'white',
+    explanation: "Pierwsza wieża bije, druga wspiera. Czarne tracą wieżę."
+  },
+  {
+    id: 38,
+    title: "Przełamanie",
+    description: "Przełam obronę przeciwnika!",
+    difficulty: "hard",
+    rating: 1750,
+    tags: ["breakthrough", "attack"],
+    position: {
+      g1: 'wK', e4: 'wQ', h1: 'wR', g2: 'wP', h2: 'wP',
+      g8: 'bK', e8: 'bR', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Qe7', 'Rh8'],
+    toMove: 'white',
+    explanation: "1. Qe7! wymusza osłabienia. Po wymianie następuje Rh8#."
+  },
+  {
+    id: 39,
+    title: "Wielka kombinacja",
+    description: "Złożona kombinacja taktyczna!",
+    difficulty: "expert",
+    rating: 1900,
+    tags: ["combination", "sacrifice"],
+    position: {
+      g1: 'wK', d1: 'wQ', f1: 'wR', h1: 'wR', c4: 'wB',
+      g8: 'bK', d8: 'bQ', f7: 'bP', g7: 'bP', h7: 'bP', a8: 'bR', h8: 'bR'
+    },
+    solution: ['Qxd8', 'Rxd8', 'Rxf7', 'Rf8', 'Rxf8'],
+    toMove: 'white',
+    explanation: "1. Qxd8+! Rxd8 2. Rxf7+ Kg8 3. Rf8+ Rxf8 4. Rxf8#"
+  },
+  {
+    id: 40,
+    title: "Roszada to pułapka",
+    description: "Ukaraj przedwczesną roszadę!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["castling", "attack"],
+    position: {
+      e1: 'wK', d1: 'wQ', f1: 'wB',
+      g8: 'bK', f8: 'bR', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Qd8'],
+    toMove: 'white',
+    explanation: "Hetman na d8 daje mata po roszadzie. Król uwięziony za własną wieżą."
+  },
+  {
+    id: 41,
+    title: "Mat Anastazji",
+    description: "Klasyczny mat nazwany!",
+    difficulty: "medium",
+    rating: 1600,
+    tags: ["mate", "pattern"],
+    position: {
+      a1: 'wK', h5: 'wN', e1: 'wR',
+      h8: 'bK', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Rh1'],
+    toMove: 'white',
+    explanation: "Wieża na h1 i skoczek na h5/f6 tworzą mat Anastazji."
+  },
+  {
+    id: 42,
+    title: "Słaby punkt f7",
+    description: "Atakuj najsłabszy punkt!",
+    difficulty: "easy",
+    rating: 1200,
+    tags: ["weakness", "f7"],
+    position: {
+      e1: 'wK', d1: 'wQ', c4: 'wB',
+      e8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Bxf7'],
+    toMove: 'white',
+    explanation: "Goniec bije słabego piona f7 z szachem, niszcząc obronę króla."
+  },
+  {
+    id: 43,
+    title: "Windmill",
+    description: "Taktyka wiatraka!",
+    difficulty: "expert",
+    rating: 1950,
+    tags: ["windmill", "advanced"],
+    position: {
+      a1: 'wK', b7: 'wB', h1: 'wR',
+      g8: 'bK', a8: 'bR', b8: 'bN', c8: 'bB', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Rxh7', 'Rh8', 'Rh7'],
+    toMove: 'white',
+    explanation: "1. Rxh7+ Kg8 2. Rh8+ Kg7 3. Rxc8 - seria szachów zbierająca figury."
+  },
+  {
+    id: 44,
+    title: "Klinch pozycyjny",
+    description: "Sklinuj pozycję przeciwnika!",
+    difficulty: "medium",
+    rating: 1550,
+    tags: ["positional", "restriction"],
+    position: {
+      e1: 'wK', d4: 'wP', e4: 'wP', f4: 'wP',
+      e8: 'bK', d5: 'bP', e5: 'bP', f5: 'bP', d7: 'bN'
+    },
+    solution: ['e5'],
+    toMove: 'white',
+    explanation: "Pion na e5 klinuje skoczka i paraliżuje pozycję czarnych."
+  },
+  {
+    id: 45,
+    title: "Mat arabski",
+    description: "Skoczek i wieża matują!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["mate", "knight", "rook"],
+    position: {
+      a1: 'wK', f6: 'wN', h1: 'wR',
+      h8: 'bK', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Rh7'],
+    toMove: 'white',
+    explanation: "Wieża i skoczek współpracują dając mata - mat arabski."
+  },
+  {
+    id: 46,
+    title: "Awans mniejszości",
+    description: "Awans pionów mniejszości!",
+    difficulty: "hard",
+    rating: 1700,
+    tags: ["pawn", "endgame"],
+    position: {
+      a1: 'wK', b4: 'wP', c5: 'wP',
+      h8: 'bK', a6: 'bP', b7: 'bP', c7: 'bP'
+    },
+    solution: ['b5'],
+    toMove: 'white',
+    explanation: "Awans pionów tworzy słabości w pozycji czarnych."
+  },
+  {
+    id: 47,
+    title: "Cios grecka",
+    description: "Klasyczne poświęcenie!",
+    difficulty: "hard",
+    rating: 1800,
+    tags: ["sacrifice", "attack", "greek-gift"],
+    position: {
+      g1: 'wK', d1: 'wQ', c4: 'wB', g5: 'wN',
+      g8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP', h8: 'bR'
+    },
+    solution: ['Bxh7', 'Qg4'],
+    toMove: 'white',
+    explanation: "1. Bxh7+! Kxh7 2. Ng5+ Kg8 (lub Kg6) 3. Qg4 z matującym atakiem."
+  },
+  {
+    id: 48,
+    title: "Zwycięska końcówka",
+    description: "Technika w końcówce!",
+    difficulty: "medium",
+    rating: 1600,
+    tags: ["endgame", "technique"],
+    position: {
+      a1: 'wK', a7: 'wP', h1: 'wR',
+      a8: 'bK', h8: 'bR'
+    },
+    solution: ['Rh8'],
+    toMove: 'white',
+    explanation: "1. Rh8+! Rxh8 2. a8=Q+ wygrywa. Typowa końcówka."
+  },
+  {
+    id: 49,
+    title: "Desperacja",
+    description: "Desperackie poświęcenie!",
+    difficulty: "expert",
+    rating: 2000,
+    tags: ["desperado", "sacrifice"],
+    position: {
+      g1: 'wK', d1: 'wQ', h1: 'wR', g2: 'wP', h2: 'wP',
+      a8: 'bK', a1: 'bQ', a7: 'bP', b7: 'bP'
+    },
+    solution: ['Qd8', 'Qxa8', 'Qxa8', 'Rh8'],
+    toMove: 'white',
+    explanation: "1. Qd8+! Qxa8 2. Qxa8+ Kb8 3. Qa7+! Ka8 4. Rh8#"
+  },
+  {
+    id: 50,
+    title: "Finałowa kombinacja",
+    description: "Wielka finałowa kombinacja!",
+    difficulty: "expert",
+    rating: 2100,
+    tags: ["combination", "mate", "brilliant"],
+    position: {
+      g1: 'wK', d1: 'wQ', f1: 'wB', h1: 'wR', f3: 'wN',
+      g8: 'bK', d8: 'bQ', c8: 'bB', f7: 'bP', g7: 'bP', h7: 'bP', a8: 'bR', h8: 'bR'
+    },
+    solution: ['Bxh7', 'Ng5', 'Qh5', 'Qxh7'],
+    toMove: 'white',
+    explanation: "1. Bxh7+! Kxh7 2. Ng5+ Kg8 (Kg6 3. Qg4) 3. Qh5 Re8 4. Qxf7+ Kh8 5. Qh7#"
+  }
+];
+
+// ==================== GAME STATE ====================
+let currentPuzzleIndex = 0;
+let currentPosition = {};
+let selectedSquare = null;
+let moveHistory = [];
+let solutionIndex = 0;
+let timerInterval = null;
+let startTime = 0;
+let elapsedTime = 0;
+let hintsUsed = 0;
+let soundEnabled = true;
+let highlightEnabled = true;
+let showCoordinates = true;
+let autoNextEnabled = false;
+
+// Stats
+let userStats = {
+  rating: 1200,
+  totalSolved: 0,
+  totalAttempts: 0,
+  currentStreak: 0,
+  bestStreak: 0,
+  todaysSolved: 0,
+  accuracyPercent: 0,
+  averageTime: 0,
+  achievements: new Set()
+};
+
+// Load stats from localStorage
+function loadStats() {
+  const saved = localStorage.getItem('chessStats');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    userStats = { ...userStats, ...parsed };
+    userStats.achievements = new Set(parsed.achievements || []);
+    updateStatsDisplay();
+  }
+}
+
+// Save stats to localStorage
+function saveStats() {
+  const toSave = {
+    ...userStats,
+    achievements: Array.from(userStats.achievements)
+  };
+  localStorage.setItem('chessStats', JSON.stringify(toSave));
+}
+
+// ==================== INITIALIZATION ====================
+function init() {
+  loadStats();
+  renderCoordinates();
+  loadPuzzle(currentPuzzleIndex);
+  updateStatsDisplay();
+  updateDailyChallengeTimer();
+  setInterval(updateDailyChallengeTimer, 1000);
+}
+
+// ==================== BOARD RENDERING ====================
+function renderCoordinates() {
+  const fileCoords = document.getElementById('fileCoords');
+  const rankCoords = document.getElementById('rankCoords');
+  
+  fileCoords.innerHTML = FILES.map(f => `<span>${f}</span>`).join('');
+  rankCoords.innerHTML = RANKS.map(r => `<span>${r}</span>`).join('');
+}
+
+function renderBoard() {
+  const board = document.getElementById('chessBoard');
+  board.innerHTML = '';
+  
+  RANKS.forEach((rank, rankIdx) => {
+    FILES.forEach((file, fileIdx) => {
+      const square = document.createElement('div');
+      const isLight = (rankIdx + fileIdx) % 2 === 0;
+      const squareId = file + rank;
+      
+      square.className = `square ${isLight ? 'light' : 'dark'}`;
+      square.dataset.square = squareId;
+      
+      // Add coordinate labels on edge squares
+      if (showCoordinates) {
+        if (fileIdx === 7) {
+          const rankLabel = document.createElement('span');
+          rankLabel.className = 'square-label rank';
+          rankLabel.textContent = rank;
+          square.appendChild(rankLabel);
+        }
+        if (rankIdx === 7) {
+          const fileLabel = document.createElement('span');
+          fileLabel.className = 'square-label file';
+          fileLabel.textContent = file;
+          square.appendChild(fileLabel);
+        }
+      }
+      
+      // Add piece if exists
+      if (currentPosition[squareId]) {
+        const piece = document.createElement('div');
+        piece.className = 'piece';
+        piece.textContent = PIECES[currentPosition[squareId]];
+        piece.draggable = true;
+        square.appendChild(piece);
+      }
+      
+      square.addEventListener('click', handleSquareClick);
+      square.addEventListener('dragstart', handleDragStart);
+      square.addEventListener('dragover', handleDragOver);
+      square.addEventListener('drop', handleDrop);
+      
+      board.appendChild(square);
+    });
+  });
+  
+  highlightLastMove();
+}
+
+function highlightLastMove() {
+  if (moveHistory.length > 0 && highlightEnabled) {
+    const lastMove = moveHistory[moveHistory.length - 1];
+    const fromSquare = document.querySelector(`[data-square="${lastMove.from}"]`);
+    const toSquare = document.querySelector(`[data-square="${lastMove.to}"]`);
+    
+    if (fromSquare) fromSquare.classList.add('last-move');
+    if (toSquare) toSquare.classList.add('last-move');
+  }
+}
+
+// ==================== PUZZLE MANAGEMENT ====================
+function loadPuzzle(index) {
+  if (index < 0 || index >= PUZZLES.length) return;
+  
+  currentPuzzleIndex = index;
+  const puzzle = PUZZLES[index];
+  
+  // Reset state
+  currentPosition = { ...puzzle.position };
+  selectedSquare = null;
+  moveHistory = [];
+  solutionIndex = 0;
+  hintsUsed = 0;
+  elapsedTime = 0;
+  
+  // Update UI
+  document.getElementById('puzzleTitle').textContent = puzzle.title;
+  document.getElementById('difficultyText').textContent = 
+    puzzle.difficulty.charAt(0).toUpperCase() + puzzle.difficulty.slice(1);
+  document.getElementById('difficultyBadge').className = `difficulty-badge ${puzzle.difficulty}`;
+  document.getElementById('puzzleRating').textContent = puzzle.rating;
+  document.getElementById('currentPuzzleNumber').textContent = index + 1;
+  document.getElementById('totalPuzzles').textContent = PUZZLES.length;
+  document.getElementById('totalMoves').textContent = puzzle.solution.length;
+  document.getElementById('currentMove').textContent = 0;
+  
+  // Render tags
+  const tagsContainer = document.getElementById('puzzleTags');
+  tagsContainer.innerHTML = puzzle.tags.map(tag => 
+    `<span class="tag ${tag}">${tag.replace('-', ' ')}</span>`
+  ).join('');
+  
+  // Update solution panel
+  document.getElementById('solutionMoves').textContent = puzzle.solution.join(', ');
+  document.getElementById('solutionExplanation').textContent = puzzle.explanation;
+  document.getElementById('solutionPanel').classList.remove('visible');
+  
+  renderBoard();
+  startTimer();
+  updateMovesDisplay();
+}
+
+function nextPuzzle() {
+  closeModal();
+  if (currentPuzzleIndex < PUZZLES.length - 1) {
+    loadPuzzle(currentPuzzleIndex + 1);
+  } else {
+    showFeedback('Ukończyłeś wszystkie zadania! 🎉', 'success');
+    loadPuzzle(0);
+  }
+}
+
+function previousPuzzle() {
+  if (currentPuzzleIndex > 0) {
+    loadPuzzle(currentPuzzleIndex - 1);
+  }
+}
+
+function resetPuzzle() {
+  loadPuzzle(currentPuzzleIndex);
+  showFeedback('Zadanie zresetowane', 'info');
+}
+
+// ==================== MOVE HANDLING ====================
+function handleSquareClick(e) {
+  const square = e.currentTarget;
+  const squareId = square.dataset.square;
+  
+  if (selectedSquare) {
+    attemptMove(selectedSquare, squareId);
+    clearSelection();
+  } else if (currentPosition[squareId]) {
+    selectSquare(squareId);
+  }
+}
+
+function selectSquare(squareId) {
+  clearSelection();
+  selectedSquare = squareId;
+  
+  const square = document.querySelector(`[data-square="${squareId}"]`);
+  if (square) {
+    square.classList.add('selected');
+    if (highlightEnabled) {
+      showLegalMoves(squareId);
+    }
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll('.square').forEach(sq => {
+    sq.classList.remove('selected', 'legal-move', 'legal-capture');
+  });
+  selectedSquare = null;
+}
+
+function showLegalMoves(from) {
+  const piece = currentPosition[from];
+  if (!piece) return;
+  
+  // Simplified: just show current solution move if it matches
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  if (solutionIndex < puzzle.solution.length) {
+    const expectedMove = puzzle.solution[solutionIndex];
+    const to = expectedMove.slice(-2);
+    
+    if (expectedMove.includes(from) || guessFromSquare(expectedMove, from)) {
+      const toSquare = document.querySelector(`[data-square="${to}"]`);
+      if (toSquare) {
+        if (currentPosition[to]) {
+          toSquare.classList.add('legal-capture');
+        } else {
+          toSquare.classList.add('legal-move');
+        }
+      }
+    }
+  }
+}
+
+function guessFromSquare(notation, square) {
+  // Simple heuristic: if notation starts with piece letter (Q, R, N, B, K)
+  // and square contains that piece, it might be the from square
+  const piece = currentPosition[square];
+  if (!piece) return false;
+  
+  const pieceType = piece.charAt(1);
+  return notation.charAt(0) === pieceType;
+}
+
+function attemptMove(from, to) {
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  const expectedMove = puzzle.solution[solutionIndex];
+  
+  // Check if move matches expected solution
+  if (moveMatches(from, to, expectedMove)) {
+    makeMove(from, to);
+    solutionIndex++;
+    
+    userStats.totalAttempts++;
+    
+    if (solutionIndex >= puzzle.solution.length) {
+      // Puzzle solved!
+      setTimeout(() => puzzleSolved(), 500);
+    } else {
+      showFeedback('Świetny ruch! ✓', 'success');
+      playSound('move');
+      updateMovesDisplay();
+      
+      // Make computer response if needed
+      setTimeout(makeComputerMove, 800);
+    }
+  } else {
+    // Wrong move
+    showFeedback('Nieprawidłowy ruch. Spróbuj ponownie!', 'error');
+    playSound('error');
+    animateError();
+    userStats.totalAttempts++;
+  }
+}
+
+function moveMatches(from, to, notation) {
+  // Simple matching: check if 'to' square matches last 2 chars of notation
+  const targetSquare = notation.slice(-2);
+  if (to !== targetSquare) return false;
+  
+  // Additional check: piece on 'from' should match notation
+  const piece = currentPosition[from];
+  if (!piece) return false;
+  
+  const pieceType = piece.charAt(1);
+  
+  // If notation starts with piece letter, it should match
+  if (/[QRNBK]/.test(notation.charAt(0))) {
+    return notation.charAt(0) === pieceType;
+  }
+  
+  // For pawn moves (lowercase or no piece indicator)
+  return pieceType === 'P' || notation.length === 2;
+}
+
+function makeMove(from, to) {
+  const piece = currentPosition[from];
+  const capture = currentPosition[to];
+  
+  moveHistory.push({ from, to, piece, capture });
+  
+  currentPosition[to] = piece;
+  delete currentPosition[from];
+  
+  renderBoard();
+  updateMovesHistory();
+}
+
+function makeComputerMove() {
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  
+  // In a real implementation, this would be the opponent's response
+  // For simplicity, we'll skip computer moves in this version
+  // as most puzzles are "find the winning move" type
+}
+
+function undoMove() {
+  if (moveHistory.length === 0) return;
+  
+  const lastMove = moveHistory.pop();
+  currentPosition[lastMove.from] = lastMove.piece;
+  
+  if (lastMove.capture) {
+    currentPosition[lastMove.to] = lastMove.capture;
+  } else {
+    delete currentPosition[lastMove.to];
+  }
+  
+  if (solutionIndex > 0) solutionIndex--;
+  
+  renderBoard();
+  updateMovesHistory();
+  updateMovesDisplay();
+  showFeedback('Ruch cofnięty', 'info');
+}
+
+// ==================== DRAG AND DROP ====================
+function handleDragStart(e) {
+  const square = e.target.closest('.square');
+  if (square) {
+    selectedSquare = square.dataset.square;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', selectedSquare);
+    e.target.classList.add('dragging');
+  }
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  const from = e.dataTransfer.getData('text/plain');
+  const toSquare = e.target.closest('.square');
+  
+  if (toSquare && from) {
+    const to = toSquare.dataset.square;
+    attemptMove(from, to);
+  }
+  
+  document.querySelectorAll('.dragging').forEach(el => {
+    el.classList.remove('dragging');
+  });
+  
+  clearSelection();
+}
+
+// ==================== PUZZLE COMPLETION ====================
+function puzzleSolved() {
+  stopTimer();
+  
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  const timeBonus = Math.max(0, 60 - Math.floor(elapsedTime));
+  const hintPenalty = hintsUsed * 10;
+  const ratingChange = Math.max(5, Math.min(20, 15 + timeBonus - hintPenalty));
+  
+  // Update stats
+  userStats.totalSolved++;
+  userStats.todaysSolved++;
+  userStats.currentStreak++;
+  userStats.rating += ratingChange;
+  
+  if (userStats.currentStreak > userStats.bestStreak) {
+    userStats.bestStreak = userStats.currentStreak;
+  }
+  
+  // Calculate accuracy
+  userStats.accuracyPercent = Math.round(
+    (userStats.totalSolved / Math.max(1, userStats.totalAttempts)) * 100
+  );
+  
+  // Update average time
+  const totalTime = (userStats.averageTime * (userStats.totalSolved - 1) + elapsedTime) / userStats.totalSolved;
+  userStats.averageTime = totalTime;
+  
+  checkAchievements();
+  saveStats();
+  updateStatsDisplay();
+  
+  // Show success modal
+  document.getElementById('modalTime').textContent = formatTime(elapsedTime);
+  document.getElementById('modalMoves').textContent = moveHistory.length;
+  document.getElementById('modalRating').textContent = `+${ratingChange}`;
+  document.getElementById('successModal').classList.add('visible');
+  
+  playSound('success');
+  createConfetti();
+  
+  if (autoNextEnabled) {
+    setTimeout(() => {
+      nextPuzzle();
+    }, 3000);
+  }
+}
+
+function checkAchievements() {
+  const achievements = [
+    { id: 1, condition: userStats.totalSolved >= 1, name: 'Początek' },
+    { id: 2, condition: userStats.totalSolved >= 10, name: 'Amator' },
+    { id: 3, condition: userStats.totalSolved >= 50, name: 'Pasjonat' },
+    { id: 4, condition: userStats.totalSolved >= 100, name: 'Mistrz' },
+    { id: 5, condition: userStats.currentStreak >= 10, name: 'Nieustępliwy' },
+    { id: 6, condition: userStats.accuracyPercent >= 95, name: 'Perfekcja' }
+        
