@@ -1,55 +1,135 @@
+```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Zadania szachowe</title>
+<title>Zadania Szachowe Pro - Trenuj Taktykę</title>
 
 <style>
 :root {
-  --light: #f0d9b5;
-  --dark: #b58863;
-  --highlight: #baca44;
-  --move-from: #cdd26a;
-  --move-to: #aaa23a;
+  --board-light: #f0d9b5;
+  --board-dark: #b58863;
+  --primary: #81b64c;
+  --primary-hover: #72a744;
+  --secondary: #7fa650;
+  --accent: #ca3c3d;
+  --text-dark: #312e2b;
+  --text-light: #fff;
+  --bg-light: #f7f7f7;
+  --bg-white: #ffffff;
+  --border: #dddddd;
+  --success: #81b64c;
+  --error: #ca3c3d;
+  --warning: #f0ad4e;
+  --info: #5bc0de;
+  --highlight: rgba(255, 255, 0, 0.5);
+  --move-highlight: rgba(155, 199, 0, 0.4);
+  --shadow: 0 2px 10px rgba(0,0,0,0.1);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.15);
 }
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: system-ui, Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-header {
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  text-align: center;
-  padding: 2rem 1rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+/* Header */
+.header {
+  background: var(--text-dark);
+  color: var(--text-light);
+  padding: 0;
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-header h1 {
-  margin: 0 0 0.5rem 0;
-  font-size: 2.5rem;
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
 }
 
-header p {
-  margin: 0;
-  opacity: 0.9;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text-light);
 }
 
-.container {
-  max-width: 1000px;
+.logo-icon {
+  font-size: 2rem;
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.user-stats {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-icon {
+  font-size: 1.2rem;
+}
+
+/* Main Container */
+.main-container {
+  max-width: 1400px;
   margin: 2rem auto;
-  background: #fff;
-  padding: 2rem;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+}
+
+/* Board Section */
+.board-section {
+  background: var(--bg-white);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  padding: 2rem;
+  box-shadow: var(--shadow);
 }
 
 .puzzle-header {
@@ -57,286 +137,2060 @@ header p {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.puzzle-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.puzzle-title h1 {
+  font-size: 1.75rem;
+  color: var(--text-dark);
+}
+
+.puzzle-meta {
+  display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
-.puzzle-info {
-  flex: 1;
-}
-
-.puzzle-info h2 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
-}
-
-.puzzle-info p {
-  margin: 0;
-  color: #666;
-}
-
-.difficulty {
-  display: inline-block;
-  padding: 0.3rem 0.8rem;
+.difficulty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
   border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: bold;
-  margin-top: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
-.difficulty.easy { background: #d4edda; color: #155724; }
-.difficulty.medium { background: #fff3cd; color: #856404; }
-.difficulty.hard { background: #f8d7da; color: #721c24; }
-
-.game-status {
-  text-align: center;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 1.1rem;
-  background: #e3f2fd;
-  color: #1976d2;
-  transition: all 0.3s;
-}
-
-.game-status.success {
+.difficulty-badge.easy {
   background: #d4edda;
   color: #155724;
 }
 
-.game-status.error {
+.difficulty-badge.medium {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.difficulty-badge.hard {
   background: #f8d7da;
   color: #721c24;
 }
 
+.difficulty-badge.expert {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.9rem;
+  background: var(--primary);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.puzzle-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  padding: 0.5rem 1rem;
+  background: var(--bg-light);
+  border-radius: 8px;
+}
+
+.moves-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-light);
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Chess Board */
 .board-container {
   display: flex;
   justify-content: center;
-  align-items: center;
   margin: 2rem 0;
+  position: relative;
 }
 
 .board-wrapper {
-  display: inline-block;
   position: relative;
-  padding: 20px;
+  display: inline-block;
+}
+
+.coordinates {
+  position: absolute;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  user-select: none;
+}
+
+.file-coords {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+}
+
+.rank-coords {
+  position: absolute;
+  left: -25px;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(8, 60px);
-  grid-template-rows: repeat(8, 60px);
-  border: 3px solid #333;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  transition: transform 0.1s;
+  grid-template-columns: repeat(8, 70px);
+  grid-template-rows: repeat(8, 70px);
+  border: 3px solid var(--text-dark);
+  box-shadow: var(--shadow-lg);
   position: relative;
 }
 
 .square {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.square.light { background: var(--light); }
-.square.dark { background: var(--dark); }
+.square.light {
+  background: var(--board-light);
+}
+
+.square.dark {
+  background: var(--board-dark);
+}
 
 .square.selected {
-  background: var(--highlight) !important;
+  box-shadow: inset 0 0 0 3px var(--primary);
+  z-index: 10;
 }
 
-.square.last-move-from {
-  background: var(--move-from) !important;
-}
-
-.square.last-move-to {
-  background: var(--move-to) !important;
-}
-
-.square.possible-move::after {
+.square.legal-move::after {
   content: '';
   position: absolute;
-  width: 22px;
-  height: 22px;
-  background: rgba(0,0,0,0.15);
+  width: 25%;
+  height: 25%;
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 5;
 }
 
-.square.possible-capture::before {
+.square.legal-capture::after {
   content: '';
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 4px solid rgba(0,0,0,0.15);
+  border: 4px solid rgba(0, 0, 0, 0.2);
   border-radius: 50%;
-  box-sizing: border-box;
   pointer-events: none;
-  z-index: 5;
+}
+
+.square.last-move {
+  background-color: var(--move-highlight) !important;
+}
+
+.square.check {
+  background: radial-gradient(circle, var(--accent) 0%, transparent 70%) !important;
+}
+
+.square:hover {
+  opacity: 0.9;
 }
 
 .piece {
-  font-size: 48px;
+  font-size: 56px;
+  cursor: grab;
   user-select: none;
-  line-height: 1;
-  cursor: pointer;
-  transition: transform 0.05s;
-  z-index: 10;
-  position: relative;
+  transition: transform 0.1s ease;
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
 }
 
-.piece:hover {
-  transform: scale(1.05);
+.piece:active {
+  cursor: grabbing;
+  transform: scale(1.1);
 }
 
-.piece.white-piece {
-  cursor: pointer;
+.piece.dragging {
+  opacity: 0.5;
 }
 
-.piece.black-piece {
-  cursor: default;
-}
-
-.coords {
+.square-label {
   position: absolute;
-  font-size: 11px;
-  font-weight: bold;
+  font-size: 0.7rem;
+  font-weight: 600;
   pointer-events: none;
-  z-index: 5;
 }
 
-.file-coord {
+.square-label.file {
   bottom: 2px;
   right: 3px;
 }
 
-.rank-coord {
+.square-label.rank {
   top: 2px;
   left: 3px;
 }
 
-.square.light .coords { color: var(--dark); }
-.square.dark .coords { color: var(--light); }
+.square.light .square-label {
+  color: var(--board-dark);
+}
 
+.square.dark .square-label {
+  color: var(--board-light);
+}
+
+/* Control Panel */
 .controls {
   display: flex;
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-button {
-  padding: 0.8rem 1.5rem;
-  background: #667eea;
-  color: #fff;
+.btn {
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: all 0.3s;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: white;
+  box-shadow: var(--shadow);
 }
 
-button:hover:not(:disabled) {
-  background: #5568d3;
+.btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-lg);
 }
 
-button:active:not(:disabled) {
+.btn:active {
   transform: translateY(0);
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.btn-primary {
+  background: var(--primary);
 }
 
-button.secondary {
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
   background: #6c757d;
 }
 
-button.secondary:hover:not(:disabled) {
+.btn-secondary:hover {
   background: #5a6268;
 }
 
-.move-list {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  min-height: 60px;
+.btn-success {
+  background: var(--success);
 }
 
-.move-list h4 {
-  margin: 0 0 0.5rem 0;
-  color: #495057;
+.btn-danger {
+  background: var(--accent);
 }
 
-.move-list .moves {
+.btn-info {
+  background: var(--info);
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+/* Sidebar */
+.sidebar {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.panel {
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.panel-header {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
 }
 
-.move-list .move {
-  padding: 0.3rem 0.6rem;
-  background: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  font-family: monospace;
+.panel-icon {
+  font-size: 1.4rem;
 }
 
-.stats {
-  text-align: center;
-  margin-top: 1rem;
+/* Progress Panel */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.progress-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-label {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.progress-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-light);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width 0.5s ease;
+  border-radius: 10px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--bg-light);
   padding: 1rem;
-  background: #f8f9fa;
   border-radius: 8px;
-}
-
-.stats span {
-  display: inline-block;
-  margin: 0 1rem;
-  font-weight: bold;
-  color: #495057;
-}
-
-footer {
   text-align: center;
-  padding: 2rem 1rem;
-  color: rgba(255,255,255,0.8);
-  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+/* Moves List */
+.moves-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.move-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.move-item:hover {
+  background: var(--bg-light);
+}
+
+.move-number {
+  font-weight: 700;
+  min-width: 40px;
+  color: #666;
+}
+
+.move-notation {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Hint Panel */
+.hint-content {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--info);
+  margin-top: 1rem;
+  display: none;
+}
+
+.hint-content.visible {
+  display: block;
+}
+
+.hint-text {
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+/* Solution Panel */
+.solution-panel {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-left: 4px solid var(--success);
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: none;
+}
+
+.solution-panel.visible {
+  display: block;
+}
+
+.solution-header {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #155724;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.solution-moves {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.solution-explanation {
+  color: #155724;
+  line-height: 1.8;
+}
+
+/* Feedback Messages */
+.feedback {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 1001;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.feedback.visible {
+  display: flex;
+}
+
+.feedback.success {
+  background: var(--success);
+  color: white;
+}
+
+.feedback.error {
+  background: var(--accent);
+  color: white;
+}
+
+.feedback.info {
+  background: var(--info);
+  color: white;
+}
+
+.feedback-icon {
+  font-size: 1.5rem;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.visible {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-white);
+  padding: 2.5rem;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  text-align: center;
+  animation: modalPop 0.3s ease;
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.modal-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.modal-stats {
+  background: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.modal-stat {
+  text-align: center;
+}
+
+.modal-stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.modal-stat-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Puzzle Navigation */
+.puzzle-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.puzzle-counter {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Themes */
+.theme-selector {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.theme-option {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.theme-option:hover {
+  transform: scale(1.1);
+}
+
+.theme-option.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--bg-white);
+}
+
+.theme-classic {
+  background: linear-gradient(135deg, #f0d9b5 50%, #b58863 50%);
+}
+
+.theme-blue {
+  background: linear-gradient(135deg, #dee3e6 50%, #8ca2ad 50%);
+}
+
+.theme-green {
+  background: linear-gradient(135deg, #ffffdd 50%, #86a666 50%);
+}
+
+.theme-brown {
+  background: linear-gradient(135deg, #f0dab5 50%, #946f51 50%);
+}
+
+/* Settings Panel */
+.settings-group {
+  margin-bottom: 1.5rem;
+}
+
+.settings-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: var(--text-dark);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 26px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    order: -1;
+  }
 }
 
 @media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
   .board {
-    grid-template-columns: repeat(8, 45px);
-    grid-template-rows: repeat(8, 45px);
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
   }
   
   .piece {
-    font-size: 36px;
+    font-size: 40px;
   }
   
-  .square.possible-move::after {
-    width: 16px;
-    height: 16px;
+  .main-container {
+    padding: 0 1rem;
   }
   
-  header h1 {
-    font-size: 2rem;
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
   
-  .container {
-    margin: 1rem;
-    padding: 1.5rem;
+  .modal-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 4px solid var(--bg-light);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* Animations */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.bounce {
+  animation: bounce 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.shake {
+  animation: shake 0.5s ease;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.pulse {
+  animation: pulse 0.5s ease;
+}
+
+/* Streak Counter */
+.streak-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.streak-icon {
+  font-size: 1.2rem;
+  animation: pulse 2s infinite;
+}
+
+/* Leaderboard */
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-light);
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.leaderboard-item:hover {
+  transform: translateX(5px);
+}
+
+.leaderboard-rank {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 30px;
+  text-align: center;
+}
+
+.leaderboard-rank.gold { color: #ffd700; }
+.leaderboard-rank.silver { color: #c0c0c0; }
+.leaderboard-rank.bronze { color: #cd7f32; }
+
+.leaderboard-name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.leaderboard-score {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Achievement Badges */
+.achievements {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1rem;
+}
+
+.achievement {
+  text-align: center;
+  padding: 1rem;
+  background: var(--bg-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.5;
+}
+
+.achievement.unlocked {
+  opacity: 1;
+  background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+}
+
+.achievement:hover {
+  transform: scale(1.05);
+}
+
+.achievement-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.achievement-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: var(--text-dark);
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  z-index: 1001;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Rating Change Indicator */
+.rating-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.rating-change.positive {
+  color: var(--success);
+  background: rgba(129, 182, 76, 0.1);
+}
+
+.rating-change.negative {
+  color: var(--accent);
+  background: rgba(202, 60, 61, 0.1);
+}
+
+/* Combo Counter */
+.combo-display {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--primary);
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+  z-index: 1500;
+  pointer-events: none;
+  animation: comboPop 0.5s ease;
+  display: none;
+}
+
+.combo-display.visible {
+  display: block;
+}
+
+@keyframes comboPop {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Theme Variables - Blue Theme */
+body.theme-blue {
+  --board-light: #dee3e6;
+  --board-dark: #8ca2ad;
+}
+
+body.theme-green {
+  --board-light: #ffffdd;
+  --board-dark: #86a666;
+}
+
+body.theme-brown {
+  --board-light: #f0dab5;
+  --board-dark: #946f51;
+}
+
+/* Puzzle Categories */
+.category-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.category-btn {
+  padding: 0.5rem 1rem;
+  background: var(--bg-light);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  color: var(--text-dark);
+}
+
+.category
+```html
+-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.category-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Puzzle Tags */
+.puzzle-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.tag {
+  padding: 0.3rem 0.8rem;
+  background: var(--bg-light);
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.tag.fork { background: #ffe5e5; color: #c92a2a; }
+.tag.pin { background: #e5f4ff; color: #1971c2; }
+.tag.skewer { background: #f3f0ff; color: #5f3dc4; }
+.tag.discovered-attack { background: #fff4e6; color: #e67700; }
+.tag.double-attack { background: #e7f5ff; color: #1864ab; }
+.tag.mate { background: #d3f9d8; color: #2b8a3e; }
+.tag.endgame { background: #fff5f5; color: #c92a2a; }
+.tag.opening { background: #f8f0fc; color: #862e9c; }
+.tag.middlegame { background: #fff9db; color: #e67700; }
+
+/* Performance Chart */
+.chart-container {
+  width: 100%;
+  height: 200px;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.chart-bar {
+  display: inline-block;
+  width: 8%;
+  background: var(--primary);
+  margin: 0 1%;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.chart-bar:hover {
+  background: var(--primary-hover);
+  transform: scaleY(1.05);
+}
+
+.chart-label {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.chart-value {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Daily Challenge Banner */
+.daily-challenge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.daily-challenge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.daily-challenge-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.daily-challenge-timer {
+  font-size: 0.9rem;
+  background: rgba(255,255,255,0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.daily-challenge-reward {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Notification Badge */
+.badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 10px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+/* Sound Toggle */
+.sound-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.3s;
+  z-index: 999;
+}
+
+.sound-toggle:hover {
+  transform: scale(1.1);
+}
+
+.sound-toggle.muted {
+  background: #6c757d;
+}
+
+/* Puzzle Difficulty Meter */
+.difficulty-meter {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.difficulty-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
+}
+
+.difficulty-dot.filled.easy {
+  background: #28a745;
+}
+
+.difficulty-dot.filled.medium {
+  background: #ffc107;
+}
+
+.difficulty-dot.filled.hard {
+  background: #fd7e14;
+}
+
+.difficulty-dot.filled.expert {
+  background: #dc3545;
+}
+
+/* Move History Timeline */
+.move-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.move-timeline-item {
+  position: relative;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--bg-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.move-timeline-item:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.move-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.move-timeline-item.current::before {
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.move-timeline::after {
+  content: '';
+  position: absolute;
+  left: -1.45rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+/* Hint Cost Display */
+.hint-cost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffc107;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Accuracy Indicator */
+.accuracy-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) 0% var(--accuracy-percent), #ddd var(--accuracy-percent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.accuracy-ring::before {
+  content: '';
+  position: absolute;
+  width: 45px;
+  height: 45px;
+  background: white;
+  border-radius: 50%;
+}
+
+.accuracy-value {
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* Filter Dropdown */
+.filter-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-btn {
+  background: white;
+  border: 2px solid var(--border);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.filter-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.filter-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  display: none;
+  z-index: 100;
+}
+
+.filter-menu.visible {
+  display: block;
+}
+
+.filter-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-option:hover {
+  background: var(--bg-light);
+}
+
+.filter-option input[type="checkbox"] {
+  cursor: pointer;
+}
+
+/* Practice Mode Selector */
+.practice-modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.practice-mode-card {
+  background: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 3px solid transparent;
+}
+
+.practice-mode-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.practice-mode-card.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary-hover);
+}
+
+.practice-mode-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.practice-mode-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.practice-mode-desc {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
+
+/* Analysis Board */
+.analysis-panel {
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.analysis-evaluation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.eval-bar-container {
+  flex: 1;
+  height: 30px;
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.eval-bar-white {
+  height: 100%;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.eval-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  min-width: 60px;
+  text-align: center;
+}
+
+.best-move {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.best-move-label {
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.best-move-notation {
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: var(--primary);
+}
+
+/* Puzzle Rating Graph */
+.rating-graph {
+  width: 100%;
+  height: 150px;
+  position: relative;
+  margin-top: 1rem;
+}
+
+.graph-line {
+  stroke: var(--primary);
+  stroke-width: 3;
+  fill: none;
+}
+
+.graph-point {
+  fill: var(--primary);
+  cursor: pointer;
+}
+
+.graph-point:hover {
+  fill: var(--primary-hover);
+  r: 6;
+}
+
+.graph-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+  opacity: 0.3;
+}
+
+.graph-axis {
+  stroke: var(--text-dark);
+  stroke-width: 2;
+}
+
+.graph-label {
+  font-size: 0.75rem;
+  fill: #666;
+}
+
+/* Quick Stats Dashboard */
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.quick-stat-card {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.quick-stat-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.quick-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.quick-stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-top: 0.5rem;
+}
+
+/* Time Control Buttons */
+.time-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.time-btn {
+  flex: 1;
+  padding: 0.6rem;
+  background: var(--bg-light);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.time-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.time-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Puzzle Collection */
+.puzzle-collection {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.puzzle-card {
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.puzzle-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.puzzle-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.puzzle-card-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.puzzle-card-mini-board {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.puzzle-card-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.puzzle-card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.puzzle-card-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.puzzle-card-stat-value {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.puzzle-card-stat-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* Success Animation */
+@keyframes successPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(129, 182, 76, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(129, 182, 76, 0);
+  }
+}
+
+.success-animation {
+  animation: successPulse 1s ease;
+}
+
+/* Error Animation */
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.error-animation {
+  animation: errorShake 0.5s ease;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  position: fixed;
+  top: -10px;
+  z-index: 9999;
+  animation: confettiFall 3s linear;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Elo Rating Display */
+.elo-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.elo-icon {
+  font-size: 3rem;
+}
+
+.elo-info {
+  flex: 1;
+}
+
+.elo-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.elo-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0.25rem 0;
+}
+
+.elo-change {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Puzzle Streak Flame */
+.streak-flame {
+  display: inline-block;
+  animation: flameFlicker 1.5s ease-in-out infinite;
+}
+
+@keyframes flameFlicker {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-5deg); }
+  50% { transform: scale(0.9) rotate(5deg); }
+  75% { transform: scale(1.05) rotate(-3deg); }
+}
+
+/* Tutorial Overlay */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-overlay.visible {
+  display: flex;
+}
+
+.tutorial-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+
+.tutorial-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.tutorial-step {
+  margin-bottom: 1.5rem;
+}
+
+.tutorial-step-number {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  font-weight: 700;
+  margin-right: 0.5rem;
+}
+
+.tutorial-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+/* Share Button */
+.share-btn {
+  background: #1da1f2;
+  color: white;
+}
+
+.share-btn:hover {
+  background: #1a91da;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  body.auto-theme {
+    --bg-light: #2d2d2d;
+    --bg-white: #1a1a1a;
+    --text-dark: #e0e0e0;
+    --border: #404040;
+  }
+  
+  body.auto-theme .board {
+    border-color: #404040;
+  }
+  
+  body.auto-theme .modal-content,
+  body.auto-theme .panel,
+  body.auto-theme .board-section {
+    background: #1a1a1a;
+    color: #e0e0e0;
+  }
+}
+
+/* Piece Promotion Modal */
+.promotion-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 2001;
+  display: none;
+}
+
+.promotion-modal.visible {
+  display: block;
+}
+
+.promotion-pieces {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.promotion-piece {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.promotion-piece:hover {
+  background: var(--bg-light);
+  transform: scale(1.1);
+}
+
+/* Mobile Menu */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .nav {
+    position: fixed;
+    top: 70px;
+    left: -100%;
+    width: 100%;
+    background: var(--text-dark);
+    flex-direction: column;
+    padding: 2rem;
+    transition: left 0.3s;
+  }
+  
+  .nav.visible {
+    left: 0;
+  }
+}
+
+/* Puzzle Timer Warning */
+.timer.warning {
+  color: var(--accent);
+  animation: pulse 1s infinite;
+}
+
+/* Keyboard Shortcuts Help */
+.shortcuts-help {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.shortcut-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.shortcut-item:last-child {
+  border-bottom: none;
+}
+
+.shortcut-key {
+  background: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+/* Export/Import Buttons */
+.data-management {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.export-btn, .import-btn {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.export-btn {
+  background: var(--info);
+  color: white;
+  border: none;
+}
+
+.import-btn {
+  background: var(--warning);
+  color: white;
+  border: none;
+}
+
+/* Custom Scrollbar for Moves List */
+.moves-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.moves-list::-webkit-scrollbar-track {
+  background: var(--bg-light);
+  border-radius: 10px;
+}
+
+.moves-list::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+/* Print Styles */
+@media print {
+  .header, .sidebar, .controls, .feedback {
+    display: none !important;
+  }
+  
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .board-section {
+    box-shadow: none;
   }
 }
 </style>
@@ -344,417 +2198,805 @@ footer {
 
 <body>
 
-<header>
-  <h1>♟️ Zadania Szachowe</h1>
-  <p>Ćwicz taktykę i popraw swoją grę</p>
+<!-- Header -->
+<header class="header">
+  <div class="header-content">
+    <a href="#" class="logo">
+      <span class="logo-icon">♟</span>
+      <span>Zadania Szachowe Pro</span>
+    </a>
+    
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+    
+    <nav class="nav" id="mainNav">
+      <a href="#" class="nav-link">Trenuj</a>
+      <a href="#" class="nav-link">Statystyki</a>
+      <a href="#" class="nav-link">Ranking</a>
+      <a href="#" class="nav-link">Osiągnięcia</a>
+    </nav>
+    
+    <div class="user-stats">
+      <div class="stat-item tooltip">
+        <span class="stat-icon">🏆</span>
+        <span id="userRating">1200</span>
+        <span class="tooltiptext">Twój rating</span>
+      </div>
+      <div class="stat-item tooltip">
+        <span class="stat-icon">🔥</span>
+        <span id="userStreak">0</span>
+        <span class="tooltiptext">Aktualna passa</span>
+      </div>
+    </div>
+  </div>
 </header>
 
-<div class="container">
-  <div class="puzzle-header">
-    <div class="puzzle-info">
-      <h2 id="puzzleTitle">Zadanie 1: Mat w 1</h2>
-      <p id="puzzleDescription">Białe zaczynają i dają mata.</p>
-      <span class="difficulty easy" id="puzzleDifficulty">Łatwy</span>
+<!-- Main Container -->
+<div class="main-container">
+  
+  <!-- Board Section -->
+  <div class="board-section">
+    
+    <!-- Puzzle Header -->
+    <div class="puzzle-header">
+      <div class="puzzle-title">
+        <h1 id="puzzleTitle">Zadanie Taktyczne</h1>
+        <div class="puzzle-meta">
+          <span class="difficulty-badge easy" id="difficultyBadge">
+            <span>⭐</span>
+            <span id="difficultyText">Łatwy</span>
+          </span>
+          <span class="rating-badge" id="ratingBadge">
+            <span>📊</span>
+            <span id="puzzleRating">1200</span>
+          </span>
+          <div class="puzzle-tags" id="puzzleTags"></div>
+        </div>
+      </div>
+      
+      <div class="puzzle-info">
+        <div class="timer" id="timer">
+          <span>⏱️</span>
+          <span id="timerDisplay">0:00</span>
+        </div>
+        <div class="moves-count">
+          <span>🎯</span>
+          <span><span id="currentMove">0</span>/<span id="totalMoves">0</span></span>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <div id="gameStatus" class="game-status">Twoja kolej - wykonaj najlepszy ruch!</div>
-
-  <div class="board-container">
-    <div class="board-wrapper">
-      <div id="board" class="board"></div>
+    
+    <!-- Board Container -->
+    <div class="board-container">
+      <div class="board-wrapper">
+        <div class="rank-coords coordinates" id="rankCoords"></div>
+        <div id="chessBoard" class="board"></div>
+        <div class="file-coords coordinates" id="fileCoords"></div>
+      </div>
     </div>
+    
+    <!-- Controls -->
+    <div class="controls">
+      <button class="btn btn-primary" onclick="showHint()">
+        <span class="btn-icon">💡</span>
+        <span>Podpowiedź</span>
+        <span class="hint-cost">(-10 🪙)</span>
+      </button>
+      <button class="btn btn-secondary" onclick="resetPuzzle()">
+        <span class="btn-icon">🔄</span>
+        <span>Reset</span>
+      </button>
+      <button class="btn btn-secondary" onclick="undoMove()">
+        <span class="btn-icon">↶</span>
+        <span>Cofnij</span>
+      </button>
+      <button class="btn btn-info" onclick="toggleSolution()">
+        <span class="btn-icon">🔍</span>
+        <span>Rozwiązanie</span>
+      </button>
+      <button class="btn btn-success" onclick="nextPuzzle()">
+        <span class="btn-icon">→</span>
+        <span>Następne</span>
+      </button>
+    </div>
+    
+    <!-- Solution Panel -->
+    <div class="solution-panel" id="solutionPanel">
+      <div class="solution-header">
+        <span>✅</span>
+        <span>Rozwiązanie</span>
+      </div>
+      <div class="solution-moves" id="solutionMoves">
+        1. Qg7#
+      </div>
+      <div class="solution-explanation" id="solutionExplanation">
+        Hetman na g7 daje mata - król nie ma ucieczki.
+      </div>
+    </div>
+    
+    <!-- Puzzle Navigation -->
+    <div class="puzzle-nav">
+      <button class="btn btn-secondary" onclick="previousPuzzle()">
+        <span>←</span>
+        <span>Poprzednie</span>
+      </button>
+      <div class="puzzle-counter">
+        <span id="currentPuzzleNumber">1</span> / <span id="totalPuzzles">50</span>
+      </div>
+      <button class="btn btn-secondary" onclick="nextPuzzle()">
+        <span>Następne</span>
+        <span>→</span>
+      </button>
+    </div>
+    
   </div>
-
-  <div class="move-list">
-    <h4>📝 Historia ruchów:</h4>
-    <div id="moveHistory" class="moves"></div>
+  
+  <!-- Sidebar -->
+  <div class="sidebar">
+    
+    <!-- Daily Challenge -->
+    <div class="daily-challenge">
+      <div class="daily-challenge-```html
+header">
+        <div class="daily-challenge-title">
+          <span>🎯</span>
+          <span>Wyzwanie Dnia</span>
+        </div>
+        <div class="daily-challenge-timer">⏳ 18:42:15</div>
+      </div>
+      <div class="daily-challenge-reward">
+        <span>Nagroda:</span>
+        <span>+100 🪙</span>
+        <span>+50 XP</span>
+      </div>
+    </div>
+    
+    <!-- Progress Panel -->
+    <div class="panel">
+      <h2 class="panel-header">
+        <span class="panel-icon">📊</span>
+        <span>Twój Postęp</span>
+      </h2>
+      <div class="progress-container">
+        <div class="progress-item">
+          <span class="progress-label">Dzisiejsze zadania</span>
+          <span class="progress-value"><span id="todaysSolved">0</span>/10</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="todaysProgress" style="width: 0%"></div>
+        </div>
+        
+        <div class="progress-item" style="margin-top: 1rem;">
+          <span class="progress-label">Celność</span>
+          <span class="progress-value"><span id="accuracyPercent">0</span>%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="accuracyBar" style="width: 0%"></div>
+        </div>
+        
+        <div class="progress-item" style="margin-top: 1rem;">
+          <span class="progress-label">Seria zwycięstw</span>
+          <span class="progress-value">
+            <span class="streak-flame">🔥</span>
+            <span id="currentStreak">0</span>
+          </span>
+        </div>
+      </div>
+      
+      <div class="stats-grid" style="margin-top: 1.5rem;">
+        <div class="stat-card">
+          <div class="stat-value" id="totalSolved">0</div>
+          <div class="stat-label">Rozwiązane</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalAttempts">0</div>
+          <div class="stat-label">Próby</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="averageTime">0:00</div>
+          <div class="stat-label">Śr. czas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="bestStreak">0</div>
+          <div class="stat-label">Najlepsza passa</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Moves History -->
+    <div class="panel">
+      <h2 class="panel-header">
+        <span class="panel-icon">📝</span>
+        <span>Historia Ruchów</span>
+      </h2>
+      <div class="moves-list" id="movesList">
+        <div style="text-align: center; color: #999; padding: 2rem;">
+          Brak ruchów
+        </div>
+      </div>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div class="panel">
+      <h2 class="panel-header">
+        <span class="panel-icon">⚙️</span>
+        <span>Ustawienia</span>
+      </h2>
+      
+      <div class="settings-group">
+        <label class="settings-label">Motyw szachownicy</label>
+        <div class="theme-selector">
+          <div class="theme-option theme-classic active" onclick="changeTheme('classic')" title="Klasyczny"></div>
+          <div class="theme-option theme-blue" onclick="changeTheme('blue')" title="Niebieski"></div>
+          <div class="theme-option theme-green" onclick="changeTheme('green')" title="Zielony"></div>
+          <div class="theme-option theme-brown" onclick="changeTheme('brown')" title="Brązowy"></div>
+        </div>
+      </div>
+      
+      <div class="setting-item">
+        <span>Dźwięki</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="soundToggle" checked onchange="toggleSound()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="setting-item">
+        <span>Auto-następne zadanie</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoNext" onchange="toggleAutoNext()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="setting-item">
+        <span>Podświetlanie ruchów</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="highlightMoves" checked onchange="toggleHighlight()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="setting-item">
+        <span>Współrzędne</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="showCoords" checked onchange="toggleCoords()">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    
+    <!-- Achievements -->
+    <div class="panel">
+      <h2 class="panel-header">
+        <span class="panel-icon">🏅</span>
+        <span>Osiągnięcia</span>
+      </h2>
+      <div class="achievements">
+        <div class="achievement" id="achievement1" title="Pierwsze zadanie">
+          <div class="achievement-icon">🎯</div>
+          <div class="achievement-name">Początek</div>
+        </div>
+        <div class="achievement" id="achievement2" title="10 zadań">
+          <div class="achievement-icon">⭐</div>
+          <div class="achievement-name">Amator</div>
+        </div>
+        <div class="achievement" id="achievement3" title="50 zadań">
+          <div class="achievement-icon">🔥</div>
+          <div class="achievement-name">Pasjonat</div>
+        </div>
+        <div class="achievement" id="achievement4" title="100 zadań">
+          <div class="achievement-icon">💎</div>
+          <div class="achievement-name">Mistrz</div>
+        </div>
+        <div class="achievement" id="achievement5" title="Seria 10">
+          <div class="achievement-icon">⚡</div>
+          <div class="achievement-name">Nieustępliwy</div>
+        </div>
+        <div class="achievement" id="achievement6" title="Perfekcja">
+          <div class="achievement-icon">👑</div>
+          <div class="achievement-name">Perfekcja</div>
+        </div>
+      </div>
+    </div>
+    
   </div>
+  
+</div>
 
-  <div class="controls">
-    <button id="hintBtn" onclick="showHint()">💡 Podpowiedź</button>
-    <button class="secondary" onclick="resetPuzzle()">🔄 Reset zadania</button>
-    <button class="secondary" onclick="nextPuzzle()">➡️ Następne zadanie</button>
-  </div>
+<!-- Feedback Messages -->
+<div class="feedback" id="feedback">
+  <span class="feedback-icon" id="feedbackIcon">✓</span>
+  <span id="feedbackText">Świetny ruch!</span>
+</div>
 
-  <div class="stats">
-    <span>📊 Zadanie: <span id="puzzleNumber">1</span> / 3</span>
-    <span>✅ Rozwiązane: <span id="solvedCount">0</span></span>
+<!-- Success Modal -->
+<div class="modal" id="successModal">
+  <div class="modal-content">
+    <div class="modal-icon">🎉</div>
+    <h2 class="modal-title">Gratulacje!</h2>
+    <p class="modal-message">Rozwiązałeś zadanie poprawnie!</p>
+    
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalTime">0:00</div>
+        <div class="modal-stat-label">Czas</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalMoves">0</div>
+        <div class="modal-stat-label">Ruchy</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalRating">+10</div>
+        <div class="modal-stat-label">Rating</div>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Zamknij</button>
+      <button class="btn btn-success" onclick="nextPuzzle()">Następne →</button>
+    </div>
   </div>
 </div>
 
-<footer>© 2025 Zadania Szachowe | Ucz się i rozwijaj swoje umiejętności</footer>
+<!-- Combo Display -->
+<div class="combo-display" id="comboDisplay">COMBO x3!</div>
+
+<!-- Sound Toggle Button -->
+<button class="sound-toggle" id="soundBtn" onclick="toggleSound()">🔊</button>
 
 <script>
-const pieces = {
-  "wK": "♔", "wQ": "♕", "wR": "♖", "wB": "♗", "wN": "♘", "wP": "♙",
-  "bK": "♚", "bQ": "♛", "bR": "♜", "bB": "♝", "bN": "♞", "bP": "♟"
+// ==================== CONSTANTS ====================
+const PIECES = {
+  wK: '♔', wQ: '♕', wR: '♖', wB: '♗', wN: '♘', wP: '♙',
+  bK: '♚', bQ: '♛', bR: '♜', bB: '♝', bN: '♞', bP: '♟'
 };
 
-const puzzles = [
+const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
+
+// ==================== PUZZLE DATABASE ====================
+const PUZZLES = [
   {
-    title: "Zadanie 1: Mat w 1",
-    description: "Białe zaczynają i dają mata.",
+    id: 1,
+    title: "Mat w 1 ruchu",
+    description: "Białe do ruchu. Znajdź matującą sekwencję.",
     difficulty: "easy",
-    initialPosition: {
-      "e1": "wK",
-      "d1": "wQ",
-      "e8": "bK",
-      "f7": "bP",
-      "g7": "bP"
+    rating: 1200,
+    tags: ["mate", "basic"],
+    position: {
+      g1: 'wK', g5: 'wQ', g8: 'bK'
     },
-    solution: [
-      { from: "d1", to: "d8", piece: "wQ" }
-    ],
-    explanation: "Hetman na d8 daje mata - król na e8 jest zablokowany własnymi pionkami."
+    solution: ['Qg7'],
+    toMove: 'white',
+    explanation: "Hetman na g7 daje mata. Król czarny nie ma ucieczki - hetman kontroluje h8, h7 i f8."
   },
   {
-    title: "Zadanie 2: Mat w 2",
-    description: "Białe zaczynają. Znajdź sekwencję matującą.",
-    difficulty: "medium",
-    initialPosition: {
-      "e1": "wK",
-      "a1": "wR",
-      "h1": "wR",
-      "e8": "bK",
-      "f7": "bP",
-      "g7": "bP",
-      "h7": "bP"
+    id: 2,
+    title: "Widelec skoczka",
+    description: "Białe mogą wygrać materiał. Jak?",
+    difficulty: "easy",
+    rating: 1250,
+    tags: ["fork", "knight"],
+    position: {
+      e1: 'wK', d4: 'wN', f3: 'wB',
+      e8: 'bK', c6: 'bQ', f6: 'bN'
     },
-    solution: [
-      { from: "a1", to: "a8", piece: "wR" },
-      { from: "e8", to: "f7", piece: "bK" },
-      { from: "h1", to: "h7", piece: "wR" }
-    ],
-    explanation: "1. Ra8+ wymusza Kf7 (jedyne pole). 2. Rh7# - mat!"
+    solution: ['Ne6'],
+    toMove: 'white',
+    explanation: "Skoczek na e6 atakuje jednocześnie hetmana i króla (widelec). Czarne tracą hetmana."
   },
   {
-    title: "Zadanie 3: Widelec",
-    description: "Białe wykonują widelec i wygrywają hetmana.",
+    id: 3,
+    title: "Mat wieżami",
+    description: "Białe matują w 2 ruchach.",
     difficulty: "medium",
-    initialPosition: {
-      "e1": "wK",
-      "f3": "wN",
-      "e8": "bK",
-      "d5": "bQ",
-      "f6": "bB"
+    rating: 1400,
+    tags: ["mate", "rook", "endgame"],
+    position: {
+      e1: 'wK', d1: 'wR', h1: 'wR',
+      e8: 'bK', a7: 'bP', b7: 'bP'
     },
-    solution: [
-      { from: "f3", to: "g5", piece: "wN" },
-      { from: "e8", to: "d8", piece: "bK" },
-      { from: "g5", to: "d5", piece: "wN" }
-    ],
-    explanation: "Ng5 atakuje króla i hetmana. Po ruchu króla, zbijamy hetmana."
-  }
-];
-
-let currentPuzzle = 0;
-let solvedPuzzles = new Set();
-let currentPosition = {};
-let moveHistory = [];
-let solutionIndex = 0;
-let isPlayerTurn = true;
-let selectedSquare = null;
-
-const files = ["a","b","c","d","e","f","g","h"];
-
-function resetPuzzle() {
-  const puzzle = puzzles[currentPuzzle];
-  currentPosition = JSON.parse(JSON.stringify(puzzle.initialPosition));
-  moveHistory = [];
-  solutionIndex = 0;
-  isPlayerTurn = true;
-  selectedSquare = null;
-  updateGameStatus("Twoja kolej - wykonaj najlepszy ruch!", "");
-  renderBoard();
-  updateMoveHistory();
-}
-
-function renderBoard() {
-  const board = document.getElementById("board");
-  board.innerHTML = "";
-
-  for (let rank = 8; rank >= 1; rank--) {
-    for (let file = 0; file < 8; file++) {
-      const square = document.createElement("div");
-      const isLight = (rank + file) % 2 === 0;
-      square.className = `square ${isLight ? "light" : "dark"}`;
-
-      const coord = files[file] + rank;
-      square.dataset.coord = coord;
-      
-      if (file === 7) {
-        const rankCoord = document.createElement("div");
-        rankCoord.className = "coords rank-coord";
-        rankCoord.textContent = rank;
-        square.appendChild(rankCoord);
-      }
-      if (rank === 1) {
-        const fileCoord = document.createElement("div");
-        fileCoord.className = "coords file-coord";
-        fileCoord.textContent = files[file];
-        square.appendChild(fileCoord);
-      }
-
-      // Highlight last move
-      if (moveHistory.length > 0) {
-        const lastMove = moveHistory[moveHistory.length - 1];
-        if (coord === lastMove.from) square.classList.add("last-move-from");
-        if (coord === lastMove.to) square.classList.add("last-move-to");
-      }
-
-      // Highlight selected square
-      if (selectedSquare === coord) {
-        square.classList.add("selected");
-      }
-
-      // Show possible moves
-      if (selectedSquare && isPlayerTurn) {
-        const possibleMoves = getPossibleMoves(selectedSquare);
-        if (possibleMoves.includes(coord)) {
-          if (currentPosition[coord]) {
-            square.classList.add("possible-capture");
-          } else {
-            square.classList.add("possible-move");
-          }
-        }
-      }
-
-      if (currentPosition[coord]) {
-        const piece = document.createElement("div");
-        const pieceType = currentPosition[coord];
-        piece.className = `piece ${pieceType.startsWith('w') ? 'white-piece' : 'black-piece'}`;
-        piece.textContent = pieces[pieceType];
-        piece.dataset.coord = coord;
-        piece.dataset.piece = pieceType;
-        
-        square.appendChild(piece);
-      }
-      
-      // Add click handler to square
-      square.addEventListener("click", handleSquareClick);
-
-      board.appendChild(square);
-    }
-  }
-}
-
-function handleSquareClick(e) {
-  if (!isPlayerTurn) return;
-
-  const clickedSquare = e.currentTarget;
-  const coord = clickedSquare.dataset.coord;
-  const piece = currentPosition[coord];
-
-  // If a square is already selected
-  if (selectedSquare) {
-    const possibleMoves = getPossibleMoves(selectedSquare);
-    
-    // If clicking on a possible move destination
-    if (possibleMoves.includes(coord)) {
-      makeMove(selectedSquare, coord);
-      selectedSquare = null;
-      renderBoard();
-      return;
-    }
-    
-    // If clicking on another white piece, select it instead
-    if (piece && piece.startsWith('w')) {
-      selectedSquare = coord;
-      renderBoard();
-      return;
-    }
-    
-    // Otherwise deselect
-    selectedSquare = null;
-    renderBoard();
-  } else {
-    // No square selected, select if white piece
-    if (piece && piece.startsWith('w')) {
-      selectedSquare = coord;
-      renderBoard();
-    }
-  }
-}
-
-function getPossibleMoves(fromCoord) {
-  const puzzle = puzzles[currentPuzzle];
-  const possibleMoves = [];
-  
-  // Find all moves in solution that start from this square
-  for (let i = solutionIndex; i < puzzle.solution.length; i++) {
-    const move = puzzle.solution[i];
-    if (move.from === fromCoord && move.piece.startsWith('w')) {
-      possibleMoves.push(move.to);
-    }
-  }
-  
-  return possibleMoves;
-}
-
-function makeMove(fromCoord, toCoord) {
-  const piece = currentPosition[fromCoord];
-  if (!piece) return;
-
-  const puzzle = puzzles[currentPuzzle];
-  const expectedMove = puzzle.solution[solutionIndex];
-
-  // Check if this is the correct move
-  if (expectedMove.from === fromCoord && expectedMove.to === toCoord) {
-    // Correct move!
-    currentPosition[toCoord] = piece;
-    delete currentPosition[fromCoord];
-    
-    moveHistory.push({
-      from: fromCoord,
-      to: toCoord,
-      piece: piece,
-      notation: getPieceNotation(piece) + toCoord
-    });
-    
-    solutionIndex++;
-    selectedSquare = null;
-    renderBoard();
-    updateMoveHistory();
-    
-    // Check if puzzle is complete
-    if (solutionIndex >= puzzle.solution.length) {
-      puzzleSolved();
-    } else {
-      // Check if next move is opponent's
-      const nextMove = puzzle.solution[solutionIndex];
-      if (nextMove.piece.startsWith('b')) {
-        // Opponent's turn
-        isPlayerTurn = false;
-        updateGameStatus("Przeciwnik myśli...", "");
-        setTimeout(() => makeOpponentMove(), 800);
-      } else {
-        updateGameStatus("Świetnie! Wykonaj następny ruch.", "success");
-      }
-    }
-  } else {
-    // Wrong move
-    updateGameStatus("To nie jest najlepszy ruch! Spróbuj ponownie.", "error");
-    animateWrongMove();
-  }
-}
-
-function makeOpponentMove() {
-  const puzzle = puzzles[currentPuzzle];
-  const move = puzzle.solution[solutionIndex];
-  
-  currentPosition[move.to] = move.piece;
-  delete currentPosition[move.from];
-  
-  moveHistory.push({
-    from: move.from,
-    to: move.to,
-    piece: move.piece,
-    notation: getPieceNotation(move.piece) + move.to
-  });
-  
-  solutionIndex++;
-  renderBoard();
-  updateMoveHistory();
-  
-  // Check if puzzle is complete
-  if (solutionIndex >= puzzle.solution.length) {
-    puzzleSolved();
-  } else {
-    // Back to player's turn
-    isPlayerTurn = true;
-    updateGameStatus("Twoja kolej - wykonaj najlepszy ruch!", "");
-    renderBoard();
-  }
-}
-
-function getPieceNotation(piece) {
-  const notation = {
-    'wK': 'K', 'wQ': 'Q', 'wR': 'R', 'wB': 'B', 'wN': 'N', 'wP': '',
-    'bK': 'K', 'bQ': 'Q', 'bR': 'R', 'bB': 'B', 'bN': 'N', 'bP': ''
-  };
-  return notation[piece] || '';
-}
-
-function puzzleSolved() {
-  isPlayerTurn = false;
-  solvedPuzzles.add(currentPuzzle);
-  updateGameStatus("🎉 Gratulacje! Zadanie rozwiązane poprawnie!", "success");
-  document.getElementById("solvedCount").textContent = solvedPuzzles.size;
-}
-
-function animateWrongMove() {
-  const board = document.getElementById("board");
-  board.style.transform = "translateX(-10px)";
-  setTimeout(() => { board.style.transform = "translateX(10px)"; }, 100);
-  setTimeout(() => { board.style.transform = "translateX(0)"; }, 200);
-}
-
-function updateGameStatus(message, type) {
-  const status = document.getElementById("gameStatus");
-  status.textContent = message;
-  status.className = "game-status";
-  if (type) status.classList.add(type);
-}
-
-function updateMoveHistory() {
-  const historyEl = document.getElementById("moveHistory");
-  historyEl.innerHTML = "";
-  
-  moveHistory.forEach((move, i) => {
-    const moveEl = document.createElement("span");
-    moveEl.className = "move";
-    moveEl.textContent = `${Math.floor(i/2) + 1}${i % 2 === 0 ? '.' : '...'} ${move.notation}`;
-    historyEl.appendChild(moveEl);
-  });
-  
-  if (moveHistory.length === 0) {
-    historyEl.innerHTML = '<span style="color: #999;">Brak ruchów</span>';
-  }
-}
-
-function updatePuzzleInfo() {
-  const puzzle = puzzles[currentPuzzle];
-  document.getElementById("puzzleTitle").textContent = puzzle.title;
-  document.getElementById("puzzleDescription").textContent = puzzle.description;
-  document.getElementById("puzzleDifficulty").textContent = 
-    puzzle.difficulty === "easy" ? "Łatwy" : puzzle.difficulty === "medium" ? "Średni" : "Trudny";
-  document.getElementById("puzzleDifficulty").className = `difficulty ${puzzle.difficulty}`;
-  document.getElementById("puzzleNumber").textContent = currentPuzzle + 1;
-  document.getElementById("solvedCount").textContent = solvedPuzzles.size;
-}
-
-function showHint() {
-  if (!isPlayerTurn) return;
-  
-  const puzzle = puzzles[currentPuzzle];
-  const nextMove = puzzle.solution[solutionIndex];
-  
-  updateGameStatus(`💡 Podpowiedź: Przesuń ${getPieceName(nextMove.piece)} z ${nextMove.from} na ${nextMove.to}`, "");
-  
-  // Auto-select the piece
-  selectedSquare = nextMove.from;
-  renderBoard();
-}
-
-function getPieceName(piece) {
-  const names = {
-    'wK': 'króla', 'wQ': 'hetmana', 'wR': 'wieżę', 'wB': 'gońca', 'wN': 'skoczka', 'wP': 'piona',
-    'bK': 'króla', 'bQ': 'hetmana', 'bR': 'wieżę', 'bB': 'gońca', 'bN': 'skoczka', 'bP': 'piona'
-  };
-  return names[piece] || 'figurę';
-}
-
-function nextPuzzle() {
-  currentPuzzle = (currentPuzzle + 1) % puzzles.length;
-  resetPuzzle();
-  updatePuzzleInfo();
-}
-
-// Initialize
-resetPuzzle();
-updatePuzzleInfo();
-</script>
-
-</body>
-</html>
+    solution: ['Rd8', 'Rh7'],
+    toMove: 'white',
+    explanation: "1. Rd8+ wymusza Kf7. 2. Rh7# - wieża daje mata, król nie ma ucieczki."
+  },
+  {
+    id: 4,
+    title: "Odkryty atak",
+    description: "Wykorzystaj odkryty atak!",
+    difficulty: "medium",
+    rating: 1450,
+    tags: ["discovered-attack", "bishop"],
+    position: {
+      e1: 'wK', d3: 'wB', e4: 'wN', h1: 'wR',
+      e8: 'bK', d8: 'bQ', f6: 'bN', a8: 'bR'
+    },
+    solution: ['Nf6'],
+    toMove: 'white',
+    explanation: "Skoczek na f6+ odkrywa atak gońca na hetmana. Czarne tracą hetmana."
+  },
+  {
+    id: 5,
+    title: "Przebicie",
+    description: "Wykorzystaj przebicie!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["skewer", "rook"],
+    position: {
+      a1: 'wK', e1: 'wR',
+      e8: 'bK', e5: 'bQ', h8: 'bR'
+    },
+    solution: ['Re5'],
+    toMove: 'white',
+    explanation: "Wieża bije hetmana z szachem. Po odsunięciu króla, białe wygrały hetmana."
+  },
+  {
+    id: 6,
+    title: "Związanie",
+    description: "Figura przeciwnika jest związana!",
+    difficulty: "easy",
+    rating: 1300,
+    tags: ["pin", "bishop"],
+    position: {
+      e1: 'wK', c3: 'wB', d4: 'wP',
+      e8: 'bK', d5: 'bN', c6: 'bP'
+    },
+    solution: ['dxd5'],
+    toMove: 'white',
+    explanation: "Skoczek jest związany przez gońca - nie może się ruszyć, bo odkryje szach."
+  },
+  {
+    id: 7,
+    title: "Podwójny atak hetmanem",
+    description: "Hetman atakuje dwa cele!",
+    difficulty: "easy",
+    rating: 1350,
+    tags: ["double-attack", "queen"],
+    position: {
+      e1: 'wK', d1: 'wQ',
+      e8: 'bK', a5: 'bR', h5: 'bR'
+    },
+    solution: ['Qa4'],
+    toMove: 'white',
+    explanation: "Hetman na a4 atakuje obie wieże. Czarne mogą obronić tylko jedną."
+  },
+  {
+    id: 8,
+    title: "Mat pasterski",
+    description: "Klasyczny mat w debiucie!",
+    difficulty: "easy",
+    rating: 1150,
+    tags: ["mate", "opening"],
+    position: {
+      e1: 'wK', f3: 'wQ', c4: 'wB',
+      e8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Qxf7'],
+    toMove: 'white',
+    explanation: "Hetman bierze piona na f7 i daje mata. Król nie może uciec."
+  },
+  {
+    id: 9,
+    title: "Usunięcie obrońcy",
+    description: "Usuń obrońcę kluczowego pola!",
+    difficulty: "medium",
+    rating: 1550,
+    tags: ["removal", "tactic"],
+    position: {
+      e1: 'wK', d1: 'wQ', f1: 'wR',
+      e8: 'bK', f8: 'bR', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Rxf8', 'Qd8'],
+    toMove: 'white',
+    explanation: "1. Rxf8+ usuwa obrońcę. 2. Qd8# mat."
+  },
+  {
+    id: 10,
+    title: "Atak rentgenowski",
+    description: "Wykorzystaj atak przez figurę!",
+    difficulty: "hard",
+    rating: 1650,
+    tags: ["x-ray", "rook"],
+    position: {
+      a1: 'wK', e1: 'wR',
+      h1: 'bK', e5: 'bQ', e8: 'bR'
+    },
+    solution: ['Rxe5'],
+    toMove: 'white',
+    explanation: "Wieża bije hetmana odkrywając atak na wieżę. Czarne tracą materiał."
+  },
+  {
+    id: 11,
+    title: "Desperacki szach",
+    description: "Znajdź mat pomimo gorszej pozycji!",
+    difficulty: "hard",
+    rating: 1700,
+    tags: ["mate", "desperado"],
+    position: {
+      g1: 'wK', d1: 'wQ', f1: 'wR',
+      a8: 'bK', a7: 'bP', b7: 'bP', h8: 'bR'
+    },
+    solution: ['Qd8', 'Qxa8'],
+    toMove: 'white',
+    explanation: "1. Qd8+ Rxd8 2. Rxd8# - poświęcenie hetmana prowadzi do mata."
+  },
+  {
+    id: 12,
+    title: "Widelec pionem",
+    description: "Nawet pion może wykonać widelec!",
+    difficulty: "easy",
+    rating: 1200,
+    tags: ["fork", "pawn"],
+    position: {
+      e1: 'wK', d4: 'wP',
+      e8: 'bK', c5: 'bN', e5: 'bB'
+    },
+    solution: ['d5'],
+    toMove: 'white',
+    explanation: "Pion atakuje skoczka i gońca. Czarne tracą figurę."
+  },
+  {
+    id: 13,
+    title: "Zwabienie króla",
+    description: "Zwabiaj króla w pułapkę!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["deflection", "mate"],
+    position: {
+      g1: 'wK', e4: 'wQ', h1: 'wR',
+      e8: 'bK', f8: 'bR', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Qe8', 'Rh8'],
+    toMove: 'white',
+    explanation: "1. Qe8+ Rxe8 2. Rxe8# - klasyczne zwabienie."
+  },
+  {
+    id: 14,
+    title: "Blokada",
+    description: "Zablokuj drogę ucieczki!",
+    difficulty: "medium",
+    rating: 1450,
+    tags: ["blockade", "mate"],
+    position: {
+      a1: 'wK', h1: 'wR', g2: 'wP',
+      h8: 'bK', h7: 'bP', g7: 'bP', f6: 'bR'
+    },
+    solution: ['Rh6'],
+    toMove: 'white',
+    explanation: "Wieża blokuje drogę ucieczki i przygotowuje mata."
+  },
+  {
+    id: 15,
+    title: "Poświęcenie wieży",
+    description: "Czasem warto poświęcić wieżę!",
+    difficulty: "hard",
+    rating: 1750,
+    tags: ["sacrifice", "mate"],
+    position: {
+      g1: 'wK', h1: 'wR', g2: 'wP', h2: 'wP', f3: 'wQ',
+      e8: 'bK', g8: 'bR', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Rxg8', 'Qf7'],
+    toMove: 'white',
+    explanation: "1. Rxg8+! Kxg8 2. Qf7# - poświęcenie prowadzi do mata."
+  },
+  {
+    id: 16,
+    title: "Mat gońcem i skoczkiem",
+    description: "Wykorzystaj współpracę lekkich figur!",
+    difficulty: "medium",
+    rating: 1550,
+    tags: ["mate", "knight", "bishop"],
+    position: {
+      a1: 'wK', f6: 'wN', c4: 'wB',
+      h8: 'bK', g8: 'bP', h7: 'bP'
+    },
+    solution: ['Bf7'],
+    toMove: 'white',
+    explanation: "Goniec na f7 daje mata wraz ze skoczkiem. Król nie ma ucieczki."
+  },
+  {
+    id: 17,
+    title: "Atak na króla w centrum",
+    description: "Ukaraj króla w centrum!",
+    difficulty: "easy",
+    rating: 1250,
+    tags: ["attack", "center"],
+    position: {
+      a1: 'wK', d1: 'wQ', a2: 'wP', b2: 'wP',
+      e8: 'bK', d7: 'bP', e7: 'bP', f7: 'bP'
+    },
+    solution: ['Qd8'],
+    toMove: 'white',
+    explanation: "Hetman daje mata. Król w centrum jest bezbronny."
+  },
+  {
+    id: 18,
+    title: "Przełamanie obrony",
+    description: "Przełam obronę pawnów!",
+    difficulty: "hard",
+    rating: 1800,
+    tags: ["breakthrough", "pawn"],
+    position: {
+      a1: 'wK', f5: 'wP', g5: 'wP', h5: 'wP',
+      h8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP'
+    },
+    solution: ['g6', 'fxg6', 'h6'],
+    toMove: 'white',
+    explanation: "Przełamanie: 1. g6! fxg6 2. h6! gxh6 3. f6 i pion promuje."
+  },
+  {
+    id: 19,
+    title: "Tempo",
+    description: "Wygraj tempo z szachem!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["tempo", "check"],
+    position: {
+      e1: 'wK', d4: 'wQ', f1: 'wR',
+      e8: 'bK', d8: 'bQ', a8: 'bR', h8: 'bR'
+    },
+    solution: ['Qd8', 'Rf8'],
+    toMove: 'white',
+    explanation: "1. Qd8+ wymusza wymianę hetmanów. 2. Rf8# mat."
+  },
+  {
+    id: 20,
+    title: "Klinowanie",
+    description: "Wklnuj figurę przeciwnika!",
+    difficulty: "easy",
+    rating: 1300,
+    tags: ["pin", "rook"],
+    position: {
+      a1: 'wK', d1: 'wR',
+      h8: 'bK', d5: 'bQ', d8: 'bR'
+    },
+    solution: ['Rxd5'],
+    toMove: 'white',
+    explanation: "Wieża bije hetmana. Wieża czarna jest sklinowana i nie może bić."
+  },
+  {
+    id: 21,
+    title: "Mat duszony",
+    description: "Klasyczny mat duszony!",
+    difficulty: "medium",
+    rating: 1600,
+    tags: ["smothered", "mate", "knight"],
+    position: {
+      a1: 'wK', f6: 'wN', e4: 'wQ',
+      h8: 'bK', g8: 'bR', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Qg8', 'Nf7'],
+    toMove: 'white',
+    explanation: "1. Qg8+! Rxg8 2. Nf7# - mat duszony skoczkiem."
+  },
+  {
+    id: 22,
+    title: "Atakuj słabości",
+    description: "Wykorzystaj słabe pola!",
+    difficulty: "medium",
+    rating: 1450,
+    tags: ["weakness", "attack"],
+    position: {
+      e1: 'wK', d1: 'wQ', f1: 'wR',
+      e8: 'bK', f7: 'bP', h7: 'bP', e6: 'bB'
+    },
+    solution: ['Qd8', 'Rf8'],
+    toMove: 'white',
+    explanation: "Atak na słabe pole f8 prowadzi do mata."
+  },
+  {
+    id: 23,
+    title: "Przeciwatak",
+    description: "Najlepsza obrona to atak!",
+    difficulty: "hard",
+    rating: 1700,
+    tags: ["counterattack", "mate"],
+    position: {
+      g1: 'wK', d1: 'wQ', h1: 'wR', g2: 'wP', h2: 'wP',
+      a8: 'bK', a1: 'bQ', a7: 'bP', b7: 'bP'
+    },
+    solution: ['Qd8', 'Qxa8', 'Rh8'],
+    toMove: 'white',
+    explanation: "Ignorując zagrożenie, białe matują: 1. Qd8+ Qxa8 (jedyna) 2. Qxa8+ Kb8 3. Rh8#"
+  },
+  {
+    id: 24,
+    title: "Interferencja",
+    description: "Przerwij linię obrony!",
+    difficulty: "hard",
+    rating: 1650,
+    tags: ["interference", "tactic"],
+    position: {
+      a1: 'wK', e1: 'wR', d4: 'wB',
+      h8: 'bK', e8: 'bR', e5: 'bQ'
+    },
+    solution: ['Re4'],
+    toMove: 'white',
+    explanation: "Wieża na e4 przerywa obronę hetmana. Goniec może go zbić."
+  },
+  {
+    id: 25,
+    title: "Promocja piona",
+    description: "Doprowadź piona do promocji!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["promotion", "endgame"],
+    position: {
+      a1: 'wK', a7: 'wP', e1: 'wR',
+      h8: 'bK', e8: 'bR'
+    },
+    solution: ['a8=Q'],
+    toMove: 'white',
+    explanation: "Pion promuje na hetmana z szachem. Białe wygrywają."
+  },
+  {
+    id: 26,
+    title: "Mat w narożniku",
+    description: "Król w narożniku jest bezsilny!",
+    difficulty: "easy",
+    rating: 1250,
+    tags: ["mate", "corner"],
+    position: {
+      a1: 'wK', h1: 'wR', g2: 'wR',
+      h8: 'bK', g7: 'bP', h7: 'bP'
+    },
+    solution: ['Rh2'],
+    toMove: 'white',
+    explanation: "Wieża na h2 daje mata. Król nie ma ucieczki z narożnika."
+  },
+  {
+    id: 27,
+    title: "Wielokrotny atak",
+    description: "Atakuj kilka celów jednocześnie!",
+    difficulty: "medium",
+    rating: 1550,
+    tags: ["multiple-attack", "queen"],
+    position: {
+      e1: 'wK', d1: 'wQ',
+      e8: 'bK', a5: 'bR', h5: 'bN', e4: 'bB'
+    },
+    solution: ['Qd5'],
+    toMove: 'white',
+    explanation: "Hetman atakuje wieżę, skoczka i gońca. Nie wszystkie można obronić."
+  },
+  {
+    id: 28,
+    title: "Zniszczenie ochrony króla",
+    description: "Zniszcz ochronę przeciwnika!",
+    difficulty: "hard",
+    rating: 1750,
+    tags: ["demolition", "attack"],
+    position: {
+      g1: 'wK', h1: 'wR', d1: 'wQ', g2: 'wP', h2: 'wP',
+      g8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP', h8: 'bR'
+    },
+    solution: ['Qxh7', 'Qxg7'],
+    toMove: 'white',
+    explanation: "1. Qxh7+! Kxh7 2. Rh1+ Kg8 3. Rh8#"
+  },
+  {
+    id: 29,
+    title: "Atak na dwie fronty",
+    description: "Atakuj z dwóch stron!",
+    difficulty: "medium",
+    rating: 1500,
+    tags: ["attack", "coordination"],
+    position: {
+      a1: 'wK', a8: 'wR', h8: 'wR',
+      e4: 'bK', d4: 'bP', e5: 'bP', f4: 'bP'
+    },
+    solution: ['Ra4'],
+    toMove: 'white',
+    explanation: "Wieże współpracują matując króla w centrum."
+  },
+  {
+    id: 30,
+    title: "Pułapka debiutowa",
+    description: "Klasyczna pułapka w otwarciu!",
+    difficulty: "easy",
+    rating: 1200,
+    tags: ["trap", "opening"],
+    position: {
+      e1: 'wK', d1: 'wQ', f1: 'wB', b1: 'wN', g1: 'wN',
+      e8: 'bK', d8: 'bQ', f8: 'bB', f6: 'bN', g8: 'bN', e5: 'bP'
