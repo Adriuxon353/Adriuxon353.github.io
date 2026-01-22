@@ -886,3 +886,229 @@ function loadPuzzle(index) {
   startTimer();
   updateMovesDisplay();
 }
+
+function startTimer() {
+  stopTimer();
+  startTime = Date.now();
+  timerInterval = setInterval(() => {
+    elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    document.getElementById('timerDisplay').textContent = formatTime(elapsedTime);
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function handleSquareClick(e) {
+  const square = e.currentTarget;
+  const squareId = square.dataset.square;
+  
+  if (selectedSquare) {
+    attemptMove(selectedSquare, squareId);
+    clearSelection();
+  } else if (currentPosition[squareId]) {
+    selectSquare(squareId);
+  }
+}
+
+function selectSquare(squareId) {
+  clearSelection();
+  selectedSquare = squareId;
+  
+  const square = document.querySelector(`[data-square="${squareId}"]`);
+  if (square) {
+    square.classList.add('selected');
+    if (highlightEnabled) {
+      showLegalMoves(squareId);
+    }
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll('.square').forEach(sq => {
+    sq.classList.remove('selected', 'legal-move');
+  });
+  selectedSquare = null;
+}
+
+function showLegalMoves(from) {
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  if (solutionIndex < puzzle.solution.length) {
+    const expectedMove = puzzle.solution[solutionIndex];
+    const to = expectedMove.slice(-2);
+    
+    const toSquare = document.querySelector(`[data-square="${to}"]`);
+    if (toSquare) {
+      toSquare.classList.add('legal-move');
+    }
+  }
+}
+
+function attemptMove(from, to) {
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  const expectedMove = puzzle.solution[solutionIndex];
+  
+  if (moveMatches(from, to, expectedMove)) {
+    makeMove(from, to);
+    solutionIndex++;
+    userStats.totalAttempts++;
+    
+    if (solutionIndex >= puzzle.solution.length) {
+      setTimeout(() => puzzleSolved(), 500);
+    } else {
+      showFeedback('Świetny ruch! ✓', 'success');
+      updateMovesDisplay();
+    }
+  } else {
+    showFeedback('Nieprawidłowy ruch. Spróbuj ponownie!', 'error');
+    userStats.totalAttempts++;
+  }
+}
+
+function moveMatches(from, to, notation) {
+  const targetSquare = notation.slice(-2);
+  return to === targetSquare;
+}
+
+function makeMove(from, to) {
+  const piece = currentPosition[from];
+  const capture = currentPosition[to];
+  
+  moveHistory.push({ from, to, piece, capture });
+  
+  currentPosition[to] = piece;
+  delete currentPosition[from];
+  
+  renderBoard();
+  updateMovesHistory();
+}
+
+function undoMove() {
+  if (moveHistory.length === 0) return;
+  
+  const lastMove = moveHistory.pop();
+  currentPosition[lastMove.from] = lastMove.piece;
+  
+  if (lastMove.capture) {
+    currentPosition[lastMove.to] = lastMove.capture;
+  } else {
+    delete currentPosition[lastMove.to];
+  }
+  
+  if (solutionIndex > 0) solutionIndex--;
+  
+  renderBoard();
+  updateMovesHistory();
+  updateMovesDisplay();
+  showFeedback('Ruch cofnięty', 'info');
+}
+
+function puzzleSolved() {
+  stopTimer();
+  
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  const ratingChange = Math.min(20, 15);
+  
+  userStats.totalSolved++;
+  userStats.currentStreak++;
+  userStats.rating += ratingChange;
+  
+  if (userStats.currentStreak > userStats.bestStreak) {
+    userStats.bestStreak = userStats.currentStreak;
+  }
+  
+  userStats.accuracyPercent = Math.round(
+    (userStats.totalSolved / Math.max(1, userStats.totalAttempts)) * 100
+  );
+  
+  const totalTime = (userStats.averageTime * (userStats.totalSolved - 1) + elapsedTime) / userStats.totalSolved;
+  userStats.averageTime = totalTime;
+  
+  updateStatsDisplay();
+  
+  document.getElementById('modalTime').textContent = formatTime(elapsedTime);
+  document.getElementById('modalMoves').textContent = moveHistory.length;
+  document.getElementById('modalRating').textContent = `+${ratingChange}`;
+  document.getElementById('successModal').classList.add('visible');
+}
+
+function updateStatsDisplay() {
+  document.getElementById('userRating').textContent = userStats.rating;
+  document.getElementById('userStreak').textContent = userStats.currentStreak;
+  document.getElementById('totalSolved').textContent = userStats.totalSolved;
+  document.getElementById('bestStreak').textContent = userStats.bestStreak;
+  document.getElementById('accuracyPercent').textContent = userStats.accuracyPercent;
+  document.getElementById('averageTime').textContent = formatTime(Math.floor(userStats.averageTime));
+}
+
+function updateMovesDisplay() {
+  document.getElementById('currentMove').textContent = solutionIndex;
+}
+
+function updateMovesHistory() {
+  const list = document.getElementById('movesList');
+  if (moveHistory.length === 0) {
+    list.innerHTML = '<div style="text-align: center; color: #999; padding: 2rem;">Brak ruchów</div>';
+    return;
+  }
+  
+  list.innerHTML = moveHistory.map((move, idx) => `
+    <div class="move-item">
+      <span>${idx + 1}.</span>
+      <span class="move-notation">${move.from}-${move.to}</span>
+    </div>
+  `).join('');
+}
+
+function showHint() {
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  if (solutionIndex < puzzle.solution.length) {
+    const hint = puzzle.solution[solutionIndex];
+    showFeedback(`Podpowiedź: Spróbuj ${hint}`, 'info');
+  }
+}
+
+function showFeedback(text, type) {
+  const feedback = document.getElementById('feedback');
+  document.getElementById('feedbackText').textContent = text;
+  feedback.className = `feedback ${type} visible`;
+  
+  setTimeout(() => {
+    feedback.classList.remove('visible');
+  }, 3000);
+}
+
+function nextPuzzle() {
+  closeModal();
+  if (currentPuzzleIndex < PUZZLES.length - 1) {
+    loadPuzzle(currentPuzzleIndex + 1);
+  } else {
+    showFeedback('Ukończyłeś wszystkie zadania! 🎉', 'success');
+    loadPuzzle(0);
+  }
+}
+
+function resetPuzzle() {
+  loadPuzzle(currentPuzzleIndex);
+  showFeedback('Zadanie zresetowane', 'info');
+}
+
+function closeModal() {
+  document.getElementById('successModal').classList.remove('visible');
+}
+
+window.onload = init;
+</script>
+
+</body>
+</html>
