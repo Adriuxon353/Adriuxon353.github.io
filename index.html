@@ -1,3 +1,5 @@
+
+
 ```html
 <!DOCTYPE html>
 <html lang="pl">
@@ -738,8 +740,8 @@ const PUZZLES = [
       a6: 'bP', c5: 'bP', e5: 'bP', f5: 'bP', e6: 'bK',
       a4: 'wP', c4: 'wP', f4: 'wP', c3: 'wP', e3: 'wP', d3: 'wK'
     },
-    solution: ['fxe4'],
-    explanation: "Białe wygrywają poprzez fxe4."
+    solution: ['fxe5'],
+    explanation: "Białe wygrywają poprzez fxe5."
   },
   {
     id: 3,
@@ -874,14 +876,19 @@ function renderBoard() {
 }
 
 function highlightLastMove() {
+  // Usuń wszystkie istniejące oznaczenia
+  document.querySelectorAll('.square').forEach(sq => {
+    sq.classList.remove('last-move');
+  });
+  
+  // Dodaj oznaczenie dla ostatniego ruchu
   if (moveHistory.length > 0 && highlightEnabled) {
     const lastMove = moveHistory[moveHistory.length - 1];
     const fromSquare = document.querySelector(`[data-square="${lastMove.from}"]`);
     const toSquare = document.querySelector(`[data-square="${lastMove.to}"]`);
     
     if (fromSquare) fromSquare.classList.add('last-move');
-    if (to```html
-Square) toSquare.classList.add('last-move');
+    if (toSquare) toSquare.classList.add('last-move');
   }
 }
 
@@ -1074,11 +1081,9 @@ function attemptMove(from, to) {
   
   const puzzle = PUZZLES[currentPuzzleIndex];
   const moveNotation = from + to;
-  const expectedMove = puzzle.solution[solutionIndex];
   
-  const isCorrect = expectedMove.includes(to) || 
-                    moveNotation === expectedMove ||
-                    expectedMove.endsWith(to);
+  // Sprawdź czy ruch jest poprawny w rozwiązaniu
+  const isCorrect = checkIfMoveIsCorrect(moveNotation, from, to);
   
   makeMove(from, to);
   userStats.totalAttempts++;
@@ -1096,6 +1101,18 @@ function attemptMove(from, to) {
     showFeedback('Ruch legalny, ale nie prowadzi do rozwiązania', 'info');
     updateMovesDisplay();
   }
+}
+
+function checkIfMoveIsCorrect(moveNotation, from, to) {
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  const expectedMove = puzzle.solution[solutionIndex];
+  
+  // Sprawdź czy ruch pasuje do oczekiwanego
+  if (expectedMove === to) return true; // Tylko pole docelowe
+  if (expectedMove === moveNotation) return true; // Pełna notacja
+  if (expectedMove.includes(to)) return true; // Pole docelowe w stringu
+  
+  return false;
 }
 
 function makeMove(from, to) {
@@ -1165,7 +1182,7 @@ function updateStatsDisplay() {
   document.getElementById('userStreak').textContent = userStats.currentStreak;
   document.getElementById('totalSolved').textContent = userStats.totalSolved;
   document.getElementById('bestStreak').textContent = userStats.bestStreak;
-  document.getElementById('accuracyPercent').textContent = userStats.accuracyPercent;
+  document.getElementById('accuracyPercent').textContent = userStats.accuracyPercent + '%';
   document.getElementById('averageTime').textContent = formatTime(Math.floor(userStats.averageTime));
 }
 
