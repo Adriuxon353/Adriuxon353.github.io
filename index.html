@@ -857,9 +857,30 @@ function renderBoard() {
       
       square.className = `square ${isLight ? 'light' : 'dark'}`;
       square.dataset.square = squareId;
-
       
-      if (currentPosition[squareId]) {```html
+      if (currentPosition[squareId]) {
+        const piece = document.createElement('div');
+        piece.className = 'piece';
+        piece.textContent = PIECES[currentPosition[squareId]];
+        square.appendChild(piece);
+      }
+      
+      square.addEventListener('click', handleSquareClick);
+      board.appendChild(square);
+    });
+  });
+  
+  highlightLastMove();
+}
+
+function highlightLastMove() {
+  if (moveHistory.length > 0 && highlightEnabled) {
+    const lastMove = moveHistory[moveHistory.length - 1];
+    const fromSquare = document.querySelector(`[data-square="${lastMove.from}"]`);
+    const toSquare = document.querySelector(`[data-square="${lastMove.to}"]`);
+    
+    if (fromSquare) fromSquare.classList.add('last-move');
+    if (to```html
 Square) toSquare.classList.add('last-move');
   }
 }
@@ -921,33 +942,6 @@ function handleSquareClick(e) {
   } else if (currentPosition[squareId]) {
     selectSquare(squareId);
   }
-}
-
-function selectSquare(squareId) {
-  clearSelection();
-  selectedSquare = squareId;
-  
-  const square = document.querySelector(`[data-square="${squareId}"]`);
-  if (square) {
-    square.classList.add('selected');
-    if (highlightEnabled) {
-      const piece = currentPosition[squareId];
-      if (piece) {
-        const legalMoves = getLegalMoves(squareId, piece);
-        legalMoves.forEach(move => {
-          const sq = document.querySelector(`[data-square="${move}"]`);
-          if (sq) sq.classList.add('legal-move');
-        });
-      }
-    }
-  }
-}
-
-function clearSelection() {
-  document.querySelectorAll('.square').forEach(sq => {
-    sq.classList.remove('selected', 'legal-move');
-  });
-  selectedSquare = null;
 }
 
 function getLegalMoves(from, piece) {
@@ -1039,6 +1033,33 @@ function getLegalMoves(from, piece) {
   }
   
   return moves;
+}
+
+function selectSquare(squareId) {
+  clearSelection();
+  selectedSquare = squareId;
+  
+  const square = document.querySelector(`[data-square="${squareId}"]`);
+  if (square) {
+    square.classList.add('selected');
+    if (highlightEnabled) {
+      const piece = currentPosition[squareId];
+      if (piece) {
+        const legalMoves = getLegalMoves(squareId, piece);
+        legalMoves.forEach(move => {
+          const sq = document.querySelector(`[data-square="${move}"]`);
+          if (sq) sq.classList.add('legal-move');
+        });
+      }
+    }
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll('.square').forEach(sq => {
+    sq.classList.remove('selected', 'legal-move');
+  });
+  selectedSquare = null;
 }
 
 function attemptMove(from, to) {
@@ -1210,25 +1231,3 @@ window.onload = init;
 </body>
 </html>
 ```
-        const piece = document.createElement('div');
-        piece.className = 'piece';
-        piece.textContent = PIECES[currentPosition[squareId]];
-        square.appendChild(piece);
-      }
-      
-      square.addEventListener('click', handleSquareClick);
-      board.appendChild(square);
-    });
-  });
-  
-  highlightLastMove();
-}
-
-function highlightLastMove() {
-  if (moveHistory.length > 0 && highlightEnabled) {
-    const lastMove = moveHistory[moveHistory.length - 1];
-    const fromSquare = document.querySelector(`[data-square="${lastMove.from}"]`);
-    const toSquare = document.querySelector(`[data-square="${lastMove.to}"]`);
-    
-    if (fromSquare) fromSquare.classList.add('last-move');
-    if (to
