@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -718,30 +719,51 @@ const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
 const PUZZLES = [
   {
     id: 1,
-    title: "Mat w 1 ruchu",
+    title: "Białe zaczynają i wygrywają",
     difficulty: "easy",
     rating: 1200,
-    position: { g1: 'wK', g5: 'wQ', g8: 'bK' },
-    solution: ['Qg7'],
-    explanation: "Hetman na g7 daje mata."
+    position: { 
+      c8: 'bR', e7: 'bQ', a6: 'bP', f6: 'bP', g6: 'bQ', h7: 'bP', g8: 'bK',
+      a2: 'wP', b2: 'wP', f2: 'wP', g2: 'wP', h3: 'wR', g1: 'wK'
+    },
+    solution: ['Rh8'],
+    explanation: "Wieża h3-h8 daje mata."
   },
   {
     id: 2,
-    title: "Widelec skoczka",
-    difficulty: "easy",
-    rating: 1250,
-    position: { e1: 'wK', d4: 'wN', f3: 'wB', e8: 'bK', c6: 'bQ', f6: 'bN' },
-    solution: ['Ne6'],
-    explanation: "Skoczek atakuje hetmana i króla."
+    title: "Białe zaczynają i wygrywają",
+    difficulty: "medium",
+    rating: 1400,
+    position: {
+      a6: 'bP', c5: 'bP', e5: 'bP', f5: 'bP', e6: 'bK',
+      a4: 'wP', c4: 'wP', f4: 'wP', c3: 'wP', e3: 'wP', d3: 'wK'
+    },
+    solution: ['fxe4'],
+    explanation: "Białe wygrywają poprzez fxe4."
   },
   {
     id: 3,
-    title: "Mat wieżami",
-    difficulty: "medium",
-    rating: 1400,
-    position: { e1: 'wK', d1: 'wR', h1: 'wR', e8: 'bK', a7: 'bP', b7: 'bP' },
-    solution: ['Rd8'],
-    explanation: "Wieża daje mata na ósmej linii."
+    title: "Białe zaczynają i wygrywają",
+    difficulty: "hard",
+    rating: 1600,
+    position: {
+      a6: 'bP', h6: 'bP', c4: 'bP', f6: 'bR', c5: 'bP', e5: 'bP', d5: 'wK',
+      a3: 'wP', e3: 'wR', f3: 'wP', b3: 'wR', g3: 'wP', h2: 'wP', g2: 'wP'
+    },
+    solution: ['Ra5'],
+    explanation: "Wieża a5 wygrywającym ruchem."
+  },
+  {
+    id: 4,
+    title: "Białe zaczynają i wygrywają",
+    difficulty: "hard",
+    rating: 1700,
+    position: {
+      a7: 'wR', e8: 'bR', a6: 'bP', g6: 'bP', h5: 'bP', e5: 'bP', f5: 'bP', b4: 'bP',
+      a3: 'wR', b3: 'wK', f3: 'wP', f2: 'wP', g2: 'wP'
+    },
+    solution: ['a5', 'd4', 'e4', 'd5', 'fxe4'],
+    explanation: "Sekwencja ruchów prowadząca do wygranej."
   }
 ];
 
@@ -835,30 +857,10 @@ function renderBoard() {
       
       square.className = `square ${isLight ? 'light' : 'dark'}`;
       square.dataset.square = squareId;
-      
-      if (currentPosition[squareId]) {
-        const piece = document.createElement('div');
-        piece.className = 'piece';
-        piece.textContent = PIECES[currentPosition[squareId]];
-        square.appendChild(piece);
-      }
-      
-      square.addEventListener('click', handleSquareClick);
-      board.appendChild(square);
-    });
-  });
-  
-  highlightLastMove();
-}
 
-function highlightLastMove() {
-  if (moveHistory.length > 0 && highlightEnabled) {
-    const lastMove = moveHistory[moveHistory.length - 1];
-    const fromSquare = document.querySelector(`[data-square="${lastMove.from}"]`);
-    const toSquare = document.querySelector(`[data-square="${lastMove.to}"]`);
-    
-    if (fromSquare) fromSquare.classList.add('last-move');
-    if (toSquare) toSquare.classList.add('last-move');
+      
+      if (currentPosition[squareId]) {```html
+Square) toSquare.classList.add('last-move');
   }
 }
 
@@ -929,7 +931,14 @@ function selectSquare(squareId) {
   if (square) {
     square.classList.add('selected');
     if (highlightEnabled) {
-      showLegalMoves(squareId);
+      const piece = currentPosition[squareId];
+      if (piece) {
+        const legalMoves = getLegalMoves(squareId, piece);
+        legalMoves.forEach(move => {
+          const sq = document.querySelector(`[data-square="${move}"]`);
+          if (sq) sq.classList.add('legal-move');
+        });
+      }
     }
   }
 }
@@ -941,27 +950,120 @@ function clearSelection() {
   selectedSquare = null;
 }
 
-function showLegalMoves(from) {
-  const puzzle = PUZZLES[currentPuzzleIndex];
-  if (solutionIndex < puzzle.solution.length) {
-    const expectedMove = puzzle.solution[solutionIndex];
-    const to = expectedMove.slice(-2);
-    
-    const toSquare = document.querySelector(`[data-square="${to}"]`);
-    if (toSquare) {
-      toSquare.classList.add('legal-move');
+function getLegalMoves(from, piece) {
+  const moves = [];
+  const [file, rank] = [from[0], from[1]];
+  const fileIdx = FILES.indexOf(file);
+  const rankIdx = RANKS.indexOf(rank);
+  const isWhite = piece[0] === 'w';
+  const pieceType = piece[1];
+  
+  const addMove = (f, r) => {
+    if (f >= 0 && f < 8 && r >= 0 && r < 8) {
+      const target = FILES[f] + RANKS[r];
+      const targetPiece = currentPosition[target];
+      if (!targetPiece || targetPiece[0] !== piece[0]) {
+        moves.push(target);
+      }
+      return !targetPiece;
     }
+    return false;
+  };
+  
+  switch(pieceType) {
+    case 'P':
+      const direction = isWhite ? -1 : 1;
+      const nextRank = rankIdx + direction;
+      if (nextRank >= 0 && nextRank < 8) {
+        const forward = FILES[fileIdx] + RANKS[nextRank];
+        if (!currentPosition[forward]) {
+          moves.push(forward);
+          const startRank = isWhite ? 6 : 1;
+          if (rankIdx === startRank) {
+            const twoForward = FILES[fileIdx] + RANKS[nextRank + direction];
+            if (!currentPosition[twoForward]) moves.push(twoForward);
+          }
+        }
+        [-1, 1].forEach(df => {
+          if (fileIdx + df >= 0 && fileIdx + df < 8) {
+            const diag = FILES[fileIdx + df] + RANKS[nextRank];
+            if (currentPosition[diag] && currentPosition[diag][0] !== piece[0]) {
+              moves.push(diag);
+            }
+          }
+        });
+      }
+      break;
+      
+    case 'N':
+      [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]].forEach(([df, dr]) => {
+        addMove(fileIdx + df, rankIdx + dr);
+      });
+      break;
+      
+    case 'B':
+      [[-1,-1],[-1,1],[1,-1],[1,1]].forEach(([df, dr]) => {
+        let f = fileIdx + df, r = rankIdx + dr;
+        while (addMove(f, r)) {
+          f += df;
+          r += dr;
+        }
+      });
+      break;
+      
+    case 'R':
+      [[0,-1],[0,1],[-1,0],[1,0]].forEach(([df, dr]) => {
+        let f = fileIdx + df, r = rankIdx + dr;
+        while (addMove(f, r)) {
+          f += df;
+          r += dr;
+        }
+      });
+      break;
+      
+    case 'Q':
+      [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([df, dr]) => {
+        let f = fileIdx + df, r = rankIdx + dr;
+        while (addMove(f, r)) {
+          f += df;
+          r += dr;
+        }
+      });
+      break;
+      
+    case 'K':
+      [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([df, dr]) => {
+        addMove(fileIdx + df, rankIdx + dr);
+      });
+      break;
   }
+  
+  return moves;
 }
 
 function attemptMove(from, to) {
+  const piece = currentPosition[from];
+  if (!piece) return;
+  
+  const legalMoves = getLegalMoves(from, piece);
+  if (!legalMoves.includes(to)) {
+    showFeedback('Niedozwolony ruch dla tej figury!', 'error');
+    return;
+  }
+  
   const puzzle = PUZZLES[currentPuzzleIndex];
+  const moveNotation = from + to;
   const expectedMove = puzzle.solution[solutionIndex];
   
-  if (moveMatches(from, to, expectedMove)) {
-    makeMove(from, to);
+  const isCorrect = expectedMove.includes(to) || 
+                    moveNotation === expectedMove ||
+                    expectedMove.endsWith(to);
+  
+  makeMove(from, to);
+  userStats.totalAttempts++;
+  
+  if (isCorrect) {
     solutionIndex++;
-    userStats.totalAttempts++;
     
     if (solutionIndex >= puzzle.solution.length) {
       setTimeout(() => puzzleSolved(), 500);
@@ -970,14 +1072,9 @@ function attemptMove(from, to) {
       updateMovesDisplay();
     }
   } else {
-    showFeedback('Nieprawidłowy ruch. Spróbuj ponownie!', 'error');
-    userStats.totalAttempts++;
+    showFeedback('Ruch legalny, ale nie prowadzi do rozwiązania', 'info');
+    updateMovesDisplay();
   }
-}
-
-function moveMatches(from, to, notation) {
-  const targetSquare = notation.slice(-2);
-  return to === targetSquare;
 }
 
 function makeMove(from, to) {
@@ -1112,3 +1209,26 @@ window.onload = init;
 
 </body>
 </html>
+```
+        const piece = document.createElement('div');
+        piece.className = 'piece';
+        piece.textContent = PIECES[currentPosition[squareId]];
+        square.appendChild(piece);
+      }
+      
+      square.addEventListener('click', handleSquareClick);
+      board.appendChild(square);
+    });
+  });
+  
+  highlightLastMove();
+}
+
+function highlightLastMove() {
+  if (moveHistory.length > 0 && highlightEnabled) {
+    const lastMove = moveHistory[moveHistory.length - 1];
+    const fromSquare = document.querySelector(`[data-square="${lastMove.from}"]`);
+    const toSquare = document.querySelector(`[data-square="${lastMove.to}"]`);
+    
+    if (fromSquare) fromSquare.classList.add('last-move');
+    if (to
