@@ -721,56 +721,107 @@ const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
 const PUZZLES = [
   {
     id: 1,
-    title: "Białe zaczynają i wygrywają",
+    title: "Mat w 1 ruchu - Białe",
     difficulty: "easy",
     rating: 1200,
     position: { 
-      c8: 'bR', e7: 'bQ', a6: 'bP', f6: 'bP', g6: 'bQ', h7: 'bP', g8: 'bK',
+      c8: 'bR', e7: 'bQ', a6: 'bP', f6: 'bP', g6: 'bP', h7: 'bP', g8: 'bK',
       a2: 'wP', b2: 'wP', f2: 'wP', g2: 'wP', h3: 'wR', g1: 'wK'
     },
-    solution: ['Rh8'],
+    solution: [
+      { from: 'h3', to: 'h8', piece: 'wR' }
+    ],
     explanation: "Wieża h3-h8 daje mata."
   },
   {
     id: 2,
-    title: "Białe zaczynają i wygrywają",
+    title: "Mat w 2 ruchach - Białe",
     difficulty: "medium",
     rating: 1400,
     position: {
-      a6: 'bP', c5: 'bP', e5: 'bP', f5: 'bP', e6: 'bK',
-      a4: 'wP', c4: 'wP', f4: 'wP', c3: 'wP', e3: 'wP', d3: 'wK'
+      e8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP',
+      d1: 'wQ', e1: 'wR', g1: 'wK', f2: 'wP', g2: 'wP', h2: 'wP'
     },
-    solution: ['fxe5'],
-    explanation: "Białe wygrywają poprzez fxe5."
+    solution: [
+      { from: 'd1', to: 'd8', piece: 'wQ' },  // Białe: Qd8+
+      { from: 'e8', to: 'f7', piece: 'bK' },  // Czarne: Kf7
+      { from: 'd8', to: 'd7', piece: 'wQ' }   // Białe: Qd7# mat
+    ],
+    explanation: "1. Qd8+ Kf7 2. Qd7# - hetman daje mata."
   },
   {
     id: 3,
-    title: "Białe zaczynają i wygrywają",
-    difficulty: "hard",
-    rating: 1600,
+    title: "Mat w 2 ruchach - Wieże",
+    difficulty: "medium",
+    rating: 1450,
     position: {
-      a6: 'bP', h6: 'bP', c4: 'bP', f6: 'bR', c5: 'bP', e5: 'bP', d5: 'wK',
-      a3: 'wP', e3: 'wR', f3: 'wP', b3: 'wR', g3: 'wP', h2: 'wP', g2: 'wP'
+      e8: 'bK', a7: 'bP', b7: 'bP', c7: 'bP',
+      a1: 'wR', e1: 'wR', g1: 'wK', a2: 'wP', b2: 'wP', c2: 'wP'
     },
-    solution: ['Ra5'],
-    explanation: "Wieża a5 wygrywającym ruchem."
+    solution: [
+      { from: 'a1', to: 'a8', piece: 'wR' },  // Białe: Ra8+
+      { from: 'e8', to: 'd7', piece: 'bK' },  // Czarne: Kd7
+      { from: 'e1', to: 'e7', piece: 'wR' }   // Białe: Re7# mat
+    ],
+    explanation: "1. Ra8+ Kd7 2. Re7# - wieża daje mata."
   },
   {
     id: 4,
-    title: "Białe zaczynają i wygrywają",
+    title: "Mat w 3 ruchach - Taktyka",
     difficulty: "hard",
-    rating: 1700,
+    rating: 1600,
     position: {
-      a7: 'wR', e8: 'bR', a6: 'bP', g6: 'bP', h5: 'bP', e5: 'bP', f5: 'bP', b4: 'bP',
-      a3: 'wR', b3: 'wK', f3: 'wP', f2: 'wP', g2: 'wP'
+      g8: 'bK', f7: 'bP', g7: 'bP', h7: 'bP', d6: 'bN',
+      d1: 'wQ', f1: 'wR', g1: 'wK', f2: 'wP', g2: 'wP', h2: 'wP'
     },
-    solution: ['a5', 'd4', 'e4', 'd5', 'fxe4'],
-    explanation: "Sekwencja ruchów prowadząca do wygranej."
+    solution: [
+      { from: 'd1', to: 'd5', piece: 'wQ' },  // Białe: Qd5
+      { from: 'd6', to: 'f5', piece: 'bN' },  // Czarne: Nf5
+      { from: 'd5', to: 'f7', piece: 'wQ' },  // Białe: Qxf7+
+      { from: 'g8', to: 'h8', piece: 'bK' },  // Czarne: Kh8
+      { from: 'f7', to: 'f8', piece: 'wQ' }   // Białe: Qf8# mat
+    ],
+    explanation: "1. Qd5 Nf5 2. Qxf7+ Kh8 3. Qf8# - hetman daje mata."
+  },
+  {
+    id: 5,
+    title: "Mat w 3 ruchach - Klasyka",
+    difficulty: "hard",
+    rating: 1650,
+    position: {
+      e8: 'bK', a7: 'bP', b7: 'bP', c7: 'bP', f7: 'bP', g7: 'bP', h7: 'bP',
+      d1: 'wQ', e1: 'wR', g1: 'wK', a2: 'wP', b2: 'wP', f2: 'wP', g2: 'wP', h2: 'wP'
+    },
+    solution: [
+      { from: 'd1', to: 'd8', piece: 'wQ' },  // Białe: Qd8+
+      { from: 'e8', to: 'f7', piece: 'bK' },  // Czarne: Kf7
+      { from: 'e1', to: 'e7', piece: 'wR' },  // Białe: Re7+
+      { from: 'f7', to: 'g6', piece: 'bK' },  // Czarne: Kg6
+      { from: 'd8', to: 'g8', piece: 'wQ' }   // Białe: Qg8# mat
+    ],
+    explanation: "1. Qd8+ Kf7 2. Re7+ Kg6 3. Qg8# - koordynacja hetmana i wieży."
+  },
+  {
+    id: 6,
+    title: "Mat w 2 ruchach - Gońce",
+    difficulty: "medium",
+    rating: 1500,
+    position: {
+      e8: 'bK', f7: 'bP', h7: 'bP',
+      c4: 'wB', d1: 'wQ', g1: 'wK', f2: 'wP', g2: 'wP', h2: 'wP'
+    },
+    solution: [
+      { from: 'd1', to: 'd8', piece: 'wQ' },  // Białe: Qd8+
+      { from: 'e8', to: 'f7', piece: 'bK' },  // Czarne: Kf7
+      { from: 'd8', to: 'e7', piece: 'wQ' }   // Białe: Qe7# mat
+    ],
+    explanation: "1. Qd8+ Kf7 2. Qe7# - goniec wspiera mata."
   }
 ];
 
 let currentPuzzleIndex = 0;
 let currentPosition = {};
+let initialPosition = {};
 let selectedSquare = null;
 let moveHistory = [];
 let solutionIndex = 0;
@@ -779,6 +830,7 @@ let startTime = 0;
 let elapsedTime = 0;
 let soundEnabled = true;
 let highlightEnabled = true;
+let isProcessing = false;
 
 let userStats = {
   rating: 1200,
@@ -876,12 +928,10 @@ function renderBoard() {
 }
 
 function highlightLastMove() {
-  // Usuń wszystkie istniejące oznaczenia
   document.querySelectorAll('.square').forEach(sq => {
     sq.classList.remove('last-move');
   });
   
-  // Dodaj oznaczenie dla ostatniego ruchu
   if (moveHistory.length > 0 && highlightEnabled) {
     const lastMove = moveHistory[moveHistory.length - 1];
     const fromSquare = document.querySelector(`[data-square="${lastMove.from}"]`);
@@ -899,17 +949,22 @@ function loadPuzzle(index) {
   const puzzle = PUZZLES[index];
   
   currentPosition = { ...puzzle.position };
+  initialPosition = { ...puzzle.position };
   selectedSquare = null;
   moveHistory = [];
   solutionIndex = 0;
   elapsedTime = 0;
+  isProcessing = false;
   
   document.getElementById('puzzleTitle').textContent = puzzle.title;
   document.getElementById('difficultyText').textContent = 
     puzzle.difficulty.charAt(0).toUpperCase() + puzzle.difficulty.slice(1);
   document.getElementById('difficultyBadge').className = `difficulty-badge ${puzzle.difficulty}`;
   document.getElementById('puzzleRating').textContent = puzzle.rating;
-  document.getElementById('totalMoves').textContent = puzzle.solution.length;
+  
+  // Zliczamy tylko ruchy białych
+  const whiteMoves = puzzle.solution.filter((_, idx) => idx % 2 === 0).length;
+  document.getElementById('totalMoves').textContent = whiteMoves;
   document.getElementById('currentMove').textContent = 0;
   
   renderBoard();
@@ -940,6 +995,8 @@ function formatTime(seconds) {
 }
 
 function handleSquareClick(e) {
+  if (isProcessing) return;
+  
   const square = e.currentTarget;
   const squareId = square.dataset.square;
   
@@ -947,7 +1004,11 @@ function handleSquareClick(e) {
     attemptMove(selectedSquare, squareId);
     clearSelection();
   } else if (currentPosition[squareId]) {
-    selectSquare(squareId);
+    const piece = currentPosition[squareId];
+    // Tylko białe figury mogą być wybrane
+    if (piece[0] === 'w') {
+      selectSquare(squareId);
+    }
   }
 }
 
@@ -1069,9 +1130,11 @@ function clearSelection() {
   selectedSquare = null;
 }
 
-function attemptMove(from, to) {
+async function attemptMove(from, to) {
+  if (isProcessing) return;
+  
   const piece = currentPosition[from];
-  if (!piece) return;
+  if (!piece || piece[0] !== 'w') return;
   
   const legalMoves = getLegalMoves(from, piece);
   if (!legalMoves.includes(to)) {
@@ -1079,40 +1142,62 @@ function attemptMove(from, to) {
     return;
   }
   
+  isProcessing = true;
   const puzzle = PUZZLES[currentPuzzleIndex];
-  const moveNotation = from + to;
   
-  // Sprawdź czy ruch jest poprawny w rozwiązaniu
-  const isCorrect = checkIfMoveIsCorrect(moveNotation, from, to);
+  // Sprawdź czy to poprawny ruch w rozwiązaniu
+  const expectedMove = puzzle.solution[solutionIndex];
+  const isCorrect = expectedMove && expectedMove.from === from && expectedMove.to === to;
   
+  if (!isCorrect) {
+    // ZŁY RUCH
+    showFeedback('❌ Zły ruch!', 'error');
+    userStats.totalAttempts++;
+    
+    // Cofnij wszystkie ruchy do początku
+    await new Promise(resolve => setTimeout(resolve, 800));
+    resetToInitialPosition();
+    isProcessing = false;
+    return;
+  }
+  
+  // DOBRY RUCH
   makeMove(from, to);
   userStats.totalAttempts++;
+  solutionIndex++;
   
-  if (isCorrect) {
+  // Sprawdź czy to był ostatni ruch w rozwiązaniu
+  if (solutionIndex >= puzzle.solution.length) {
+    showFeedback('Świetny ruch! ✓', 'success');
+    await new Promise(resolve => setTimeout(resolve, 500));
+    puzzleSolved();
+    isProcessing = false;
+    return;
+  }
+  
+  showFeedback('Świetny ruch! ✓', 'success');
+  updateMovesDisplay();
+  
+  // Poczekaj chwilę przed ruchem przeciwnika
+  await new Promise(resolve => setTimeout(resolve, 600));
+  
+  // Wykonaj ruch czarnych
+  const opponentMove = puzzle.solution[solutionIndex];
+  if (opponentMove) {
+    makeMove(opponentMove.from, opponentMove.to);
     solutionIndex++;
     
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    // Sprawdź czy po ruchu przeciwnika zadanie jest skończone
     if (solutionIndex >= puzzle.solution.length) {
-      setTimeout(() => puzzleSolved(), 500);
-    } else {
-      showFeedback('Świetny ruch! ✓', 'success');
-      updateMovesDisplay();
+      puzzleSolved();
+      isProcessing = false;
+      return;
     }
-  } else {
-    showFeedback('Ruch legalny, ale nie prowadzi do rozwiązania', 'info');
-    updateMovesDisplay();
   }
-}
-
-function checkIfMoveIsCorrect(moveNotation, from, to) {
-  const puzzle = PUZZLES[currentPuzzleIndex];
-  const expectedMove = puzzle.solution[solutionIndex];
   
-  // Sprawdź czy ruch pasuje do oczekiwanego
-  if (expectedMove === to) return true; // Tylko pole docelowe
-  if (expectedMove === moveNotation) return true; // Pełna notacja
-  if (expectedMove.includes(to)) return true; // Pole docelowe w stringu
-  
-  return false;
+  isProcessing = false;
 }
 
 function makeMove(from, to) {
@@ -1128,24 +1213,40 @@ function makeMove(from, to) {
   updateMovesHistory();
 }
 
+function resetToInitialPosition() {
+  currentPosition = { ...initialPosition };
+  moveHistory = [];
+  solutionIndex = 0;
+  renderBoard();
+  updateMovesHistory();
+  updateMovesDisplay();
+}
+
 function undoMove() {
-  if (moveHistory.length === 0) return;
+  if (moveHistory.length === 0 || isProcessing) return;
   
-  const lastMove = moveHistory.pop();
-  currentPosition[lastMove.from] = lastMove.piece;
+  // Cofnij dwa ruchy (białe i czarne) lub jeden jeśli to był pierwszy
+  const movesToUndo = moveHistory.length >= 2 ? 2 : 1;
   
-  if (lastMove.capture) {
-    currentPosition[lastMove.to] = lastMove.capture;
-  } else {
-    delete currentPosition[lastMove.to];
+  for (let i = 0; i < movesToUndo; i++) {
+    if (moveHistory.length === 0) break;
+    
+    const lastMove = moveHistory.pop();
+    currentPosition[lastMove.from] = lastMove.piece;
+    
+    if (lastMove.capture) {
+      currentPosition[lastMove.to] = lastMove.capture;
+    } else {
+      delete currentPosition[lastMove.to];
+    }
+    
+    if (solutionIndex > 0) solutionIndex--;
   }
-  
-  if (solutionIndex > 0) solutionIndex--;
   
   renderBoard();
   updateMovesHistory();
   updateMovesDisplay();
-  showFeedback('Ruch cofnięty', 'info');
+  showFeedback('Ruchy cofnięte', 'info');
 }
 
 function puzzleSolved() {
@@ -1172,7 +1273,7 @@ function puzzleSolved() {
   updateStatsDisplay();
   
   document.getElementById('modalTime').textContent = formatTime(elapsedTime);
-  document.getElementById('modalMoves').textContent = moveHistory.length;
+  document.getElementById('modalMoves').textContent = Math.ceil(moveHistory.length / 2);
   document.getElementById('modalRating').textContent = `+${ratingChange}`;
   document.getElementById('successModal').classList.add('visible');
 }
@@ -1187,7 +1288,10 @@ function updateStatsDisplay() {
 }
 
 function updateMovesDisplay() {
-  document.getElementById('currentMove').textContent = solutionIndex;
+  const puzzle = PUZZLES[currentPuzzleIndex];
+  const whiteMoves = puzzle.solution.filter((_, idx) => idx % 2 === 0).length;
+  const currentWhiteMove = Math.ceil(solutionIndex / 2);
+  document.getElementById('currentMove').textContent = currentWhiteMove;
 }
 
 function updateMovesHistory() {
@@ -1197,19 +1301,29 @@ function updateMovesHistory() {
     return;
   }
   
-  list.innerHTML = moveHistory.map((move, idx) => `
-    <div class="move-item">
-      <span>${idx + 1}.</span>
-      <span class="move-notation">${move.from}-${move.to}</span>
-    </div>
-  `).join('');
+  let html = '';
+  for (let i = 0; i < moveHistory.length; i += 2) {
+    const moveNum = Math.floor(i / 2) + 1;
+    const whiteMove = moveHistory[i];
+    const blackMove = moveHistory[i + 1];
+    
+    html += `
+      <div class="move-item">
+        <span>${moveNum}.</span>
+        <span class="move-notation">${whiteMove.from}-${whiteMove.to}</span>
+        ${blackMove ? `<span class="move-notation" style="margin-left: 1rem;">${blackMove.from}-${blackMove.to}</span>` : ''}
+      </div>
+    `;
+  }
+  
+  list.innerHTML = html;
 }
 
 function showHint() {
   const puzzle = PUZZLES[currentPuzzleIndex];
   if (solutionIndex < puzzle.solution.length) {
     const hint = puzzle.solution[solutionIndex];
-    showFeedback(`Podpowiedź: Spróbuj ${hint}`, 'info');
+    showFeedback(`Podpowiedź: Spróbuj ${hint.from}-${hint.to}`, 'info');
   }
 }
 
@@ -1248,3 +1362,4 @@ window.onload = init;
 </body>
 </html>
 ```
+
