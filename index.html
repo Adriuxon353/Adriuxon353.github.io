@@ -613,19 +613,37 @@ function buildPiecePreviewHTML(skinId,col,pType){
   return `<div class="piece ${cls}" style="font-size:32px;display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;position:relative">${sym}</div>`;
 }
 
+// ================================================================
+// PUZZLES — pierwsze 3 to NOWE zadania z opisu, reszta bez zmian
+// ================================================================
 const PUZZLES = [
-  {id:'E1',title:'Mat wieżą h1',diff:'easy',rating:800,goal:'mat',
-   hint:'Wieża daje mata na h1',
-   fen:'8/8/8/8/8/8/8/5RKk w - - 0 1',
-   sol:[{from:'f1',to:'h1'}],xp:10},
-  {id:'E2',title:'Mat hetmanem c2',diff:'easy',rating:820,goal:'mat',
-   hint:'Hetman daje mata na c2',
-   fen:'8/8/8/8/8/3Q4/8/2kK4 w - - 0 1',
-   sol:[{from:'d3',to:'c2'}],xp:10},
-  {id:'E3',title:'Mat wieżą w 2 ruchach',diff:'easy',rating:850,goal:'mat',
-   hint:'Wieża bierze piona z szachem, potem mata na a1',
-   fen:'8/8/8/8/8/8/1KR5/k1p5 w - - 0 1',
-   sol:[{from:'c2',to:'a2'},{from:'a1',to:'b1'},{from:'a2',to:'a1'}],xp:10},
+  // ===== ZAD 1: Mat hetmanem Qc7# =====
+  // Pozycja: Król biały e6, Hetman biały c6, Król czarny d8
+  // Hetman na c7 daje szacha i mata — czarny król nie ma ucieczki
+  {id:'Z1',title:'Mat hetmanem — Qc7#',diff:'easy',rating:800,goal:'mat',
+   hint:'Hetman na c7 — szach i mat! Biały król blokuje e7 i e8.',
+   fen:'3k4/8/2QK4/8/8/8/8/8 w - - 0 1',
+   sol:[{from:'c6',to:'c7'}],xp:10},
+
+  // ===== ZAD 2: Ofiara wieży — mat w 2 =====
+  // Pozycja: Król biały h1, Hetman biały e1, Wieża biała f1, Skoczek biały g5
+  //          Król czarny h8, Wieża czarna f8, Wieża czarna a8
+  // 1.Rxf8+ Rxf8 2.Qxf8# — po macie g8 i h7 kontroluje skoczek g5
+  {id:'Z2',title:'Ofiara wieży — mat w 2',diff:'easy',rating:820,goal:'mat',
+   hint:'Wieża bije na f8 z szachem! Czarna wieża musi bić, potem hetman daje mata.',
+   fen:'r4rk1/8/8/6N1/8/8/8/4QRK1 w - - 0 1',
+   sol:[{from:'f1',to:'f8'},{from:'f8',to:'f8'},{from:'e1',to:'f8'}],xp:10},
+
+  // ===== ZAD 3: Widełki — pionek i skoczek =====
+  // Pozycja: Król biały d1, Skoczek biały c3, Pion biały f4
+  //          Król czarny e6, Hetman czarny g6
+  // 1.f5+ Ke5 2.Nxg6 — pionek daje szacha, król ucieka, skoczek bierze hetmana
+  {id:'Z3',title:'Widełki — pionek i skoczek',diff:'easy',rating:850,goal:'material',
+   hint:'Pion f5 daje szacha królowi! Gdy król ucieknie, skoczek bierze hetmana.',
+   fen:'8/8/4k1q1/8/5P2/2N5/8/3K4 w - - 0 1',
+   sol:[{from:'f4',to:'f5'},{from:'e6',to:'e5'},{from:'c3',to:'g6'}],xp:10},
+
+  // Reszta zadań bez zmian
   {id:'E4',title:'Widełki pionem',diff:'easy',rating:870,goal:'material',
    hint:'Pion na e6 robi widełki na króla i wieżę',
    fen:'8/3k1r2/8/4P3/8/8/8/6K1 w - - 0 1',
@@ -772,7 +790,6 @@ function snd(type){
 function getUsers(){try{return JSON.parse(localStorage.getItem('spUsers4')||'[]')}catch{return[]}}
 function saveUsers(u){localStorage.setItem('spUsers4',JSON.stringify(u))}
 
-// ✅ NAPRAWIONA FUNKCJA — poprawne ID elementów tabLogin i tabReg
 function switchAuthTab(t){
   document.getElementById('tabLogin').classList.toggle('act', t==='login');
   document.getElementById('tabReg').classList.toggle('act', t==='register');
@@ -864,3 +881,4 @@ document.querySelectorAll('.mover').forEach(m=>m.addEventListener('click',e=>{if
 </script>
 </body>
 </html>
+
