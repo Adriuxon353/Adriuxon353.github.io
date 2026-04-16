@@ -613,163 +613,123 @@ function buildPiecePreviewHTML(skinId,col,pType){
   return `<div class="piece ${cls}" style="font-size:32px;display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;position:relative">${sym}</div>`;
 }
 
-// ================================================================
-// PUZZLES — E1/E2/E3 NOWE (zweryfikowane), E4-H10 bez zmian
-// ================================================================
 const PUZZLES = [
-  // ===== ŁATWE =====
-
-  // E1 — Mat w 1: Kg1, Wf1 vs Kh1 → Wf1-h1#
   {id:'E1',title:'Mat wieżą h1',diff:'easy',rating:800,goal:'mat',
    hint:'Wieża daje mata na h1',
    fen:'8/8/8/8/8/8/8/5RKk w - - 0 1',
    sol:[{from:'f1',to:'h1'}],xp:10},
-
-  // E2 — Mat w 1: Kd1, Hd3 vs Kc1 → Hd3-c2#
   {id:'E2',title:'Mat hetmanem c2',diff:'easy',rating:820,goal:'mat',
    hint:'Hetman daje mata na c2',
    fen:'8/8/8/8/8/3Q4/8/2kK4 w - - 0 1',
    sol:[{from:'d3',to:'c2'}],xp:10},
-
-  // E3 — Mat w 2: Kb2, Wc2 vs Ka1, pa2(czarny) → Wc2-a2+ Ka1-b1 Wa2-a1#
   {id:'E3',title:'Mat wieżą w 2 ruchach',diff:'easy',rating:850,goal:'mat',
    hint:'Wieża bierze piona z szachem, potem mata na a1',
    fen:'8/8/8/8/8/8/1KR5/k1p5 w - - 0 1',
    sol:[{from:'c2',to:'a2'},{from:'a1',to:'b1'},{from:'a2',to:'a1'}],xp:10},
-
-  // E4-E10 bez zmian
   {id:'E4',title:'Widełki pionem',diff:'easy',rating:870,goal:'material',
    hint:'Pion na e6 robi widełki na króla i wieżę',
    fen:'8/3k1r2/8/4P3/8/8/8/6K1 w - - 0 1',
    sol:[{from:'e5',to:'e6'},{from:'d7',to:'c7'},{from:'e6',to:'f7'}],xp:10},
-
   {id:'E5',title:'Skoczek bierze hetmana',diff:'easy',rating:890,goal:'material',
    hint:'Skoczek bierze hetmana z szachem na króla',
    fen:'4k3/5q2/3N4/8/8/8/8/6K1 w - - 0 1',
    sol:[{from:'d6',to:'f7'}],xp:10},
-
   {id:'E6',title:'Mat hetmanem g8',diff:'easy',rating:910,goal:'mat',
    hint:'Hetman na g8',
    fen:'7k/6Q1/7K/8/8/8/8/8 w - - 0 1',
    sol:[{from:'g7',to:'g8'}],xp:10},
-
   {id:'E7',title:'Wieża zbija skoczka',diff:'easy',rating:930,goal:'material',
    hint:'Wieża bierze skoczka',
    fen:'6k1/8/8/4n3/8/8/8/4R1K1 w - - 0 1',
    sol:[{from:'e1',to:'e5'}],xp:10},
-
   {id:'E8',title:'Promocja pionka',diff:'easy',rating:950,goal:'material',
    hint:'Pion promuje na hetmana',
    fen:'7k/P7/8/8/8/8/8/6K1 w - - 0 1',
    sol:[{from:'a7',to:'a8'}],xp:10},
-
   {id:'E9',title:'Szach i zbicie wieży',diff:'easy',rating:970,goal:'material',
    hint:'Hetman daje szach, potem bierze wieżę',
    fen:'3r2k1/8/8/1Q6/8/8/8/6K1 w - - 0 1',
    sol:[{from:'b5',to:'d7'},{from:'d8',to:'e8'},{from:'d7',to:'d8'}],xp:10},
-
   {id:'E10',title:'Mat hetmanem',diff:'easy',rating:1000,goal:'mat',
    hint:'Hetman na a7',
    fen:'k7/1r6/2K5/8/8/8/8/Q7 w - - 0 1',
    sol:[{from:'a1',to:'a7'}],xp:10},
-
-  // ===== ŚREDNIE =====
   {id:'M1',title:'Mat w 2',diff:'medium',rating:1200,goal:'mat',
    hint:'Hh7+ Kf8 Hf7#',
    fen:'6k1/8/6K1/8/8/8/5R2/7Q w - - 0 1',
    sol:[{from:'h1',to:'h7'},{from:'g8',to:'f8'},{from:'h7',to:'f7'}],xp:25},
-
   {id:'M2',title:'Widełki skoczkiem',diff:'medium',rating:1240,goal:'material',
    hint:'Skoczek bierze wieżę już atakując króla',
    fen:'r3k3/2N5/8/8/8/8/8/6K1 w - - 0 1',
    sol:[{from:'c7',to:'a8'}],xp:25},
-
   {id:'M3',title:'Goniec bierze hetmana z szachem',diff:'medium',rating:1270,goal:'material',
    hint:'Goniec bierze hetmana dając szach',
    fen:'4k3/3q4/8/1B6/8/8/8/6K1 w - - 0 1',
    sol:[{from:'b5',to:'d7'}],xp:25},
-
   {id:'M4',title:'Odkryty atak — goniec i wieża',diff:'medium',rating:1300,goal:'material',
    hint:'Goniec bierze f7 z szachem, wieża bierze hetmana',
    fen:'3qk3/8/8/8/2B5/8/8/3R2K1 w - - 0 1',
    sol:[{from:'c4',to:'f7'},{from:'e8',to:'f7'},{from:'d1',to:'d8'}],xp:25},
-
   {id:'M5',title:'Promocja pionka',diff:'medium',rating:1330,goal:'material',
    hint:'Pion promuje na hetmana',
    fen:'7k/6P1/8/8/8/8/8/6K1 w - - 0 1',
    sol:[{from:'g7',to:'g8'}],xp:25},
-
   {id:'M6',title:'Mat w 2 — hetman',diff:'medium',rating:1360,goal:'mat',
    hint:'Hg6-h7+ Kf8 Hf7#',
    fen:'6k1/8/6KQ/8/8/8/8/7R w - - 0 1',
    sol:[{from:'h6',to:'h7'},{from:'g8',to:'f8'},{from:'h7',to:'f7'}],xp:25},
-
   {id:'M7',title:'Hetman bierze wieżę z szachem',diff:'medium',rating:1390,goal:'material',
    hint:'Hetman bierze wieżę dając szach',
    fen:'r3k3/8/8/3Q4/8/8/8/6K1 w - - 0 1',
    sol:[{from:'d5',to:'a8'}],xp:25},
-
   {id:'M8',title:'Wieża zbija skoczka z szachem',diff:'medium',rating:1420,goal:'material',
    hint:'Wieża bierze skoczka dając szach',
    fen:'4k3/4n3/8/8/8/8/8/4R1K1 w - - 0 1',
    sol:[{from:'e1',to:'e7'}],xp:25},
-
   {id:'M9',title:'Mat w 2 — hetman',diff:'medium',rating:1450,goal:'mat',
    hint:'Hf7+ Ke8 Hf8#',
    fen:'5k2/8/3K4/8/8/8/8/7Q w - - 0 1',
    sol:[{from:'h1',to:'f3'},{from:'f8',to:'e8'},{from:'f3',to:'f8'}],xp:25},
-
   {id:'M10',title:'Wieża bierze hetmana',diff:'medium',rating:1480,goal:'material',
    hint:'Wieża bierze hetmana za darmo',
    fen:'6k1/4q3/8/8/8/8/8/3QR1K1 w - - 0 1',
    sol:[{from:'e1',to:'e7'}],xp:25},
-
-  // ===== TRUDNE =====
   {id:'H1',title:'Mat w 2 — wieża i hetman',diff:'hard',rating:1600,goal:'mat',
    hint:'Hg6+ Kh8 Wh3#',
    fen:'6k1/8/6K1/8/8/5R2/8/6Q1 w - - 0 1',
    sol:[{from:'g1',to:'g6'},{from:'g8',to:'h8'},{from:'f3',to:'h3'}],xp:50},
-
   {id:'H2',title:'Ofiara hetmana mat w 2',diff:'hard',rating:1640,goal:'mat',
    hint:'Hg8+! Wxg8 Wh8#',
    fen:'5rk1/8/6K1/8/8/8/8/6QR1 w - - 0 1',
    sol:[{from:'g1',to:'g8'},{from:'f8',to:'g8'},{from:'h1',to:'h8'}],xp:50},
-
   {id:'H3',title:'Skoczek bierze wieżę',diff:'hard',rating:1680,goal:'material',
    hint:'Skoczek na d8 bierze wieżę',
    fen:'3r1q2/6k1/4N3/8/8/8/8/6K1 w - - 0 1',
    sol:[{from:'e6',to:'d8'}],xp:50},
-
   {id:'H4',title:'Promocja pionka z szachem',diff:'hard',rating:1720,goal:'material',
    hint:'Pion promuje na hetmana',
    fen:'r6k/1P6/8/8/8/8/8/6K1 w - - 0 1',
    sol:[{from:'b7',to:'b8'}],xp:50},
-
   {id:'H5',title:'Mat hetmanem h7',diff:'hard',rating:1760,goal:'mat',
    hint:'Hetman na h7',
    fen:'7k/8/5KQ1/8/8/8/8/8 w - - 0 1',
    sol:[{from:'g6',to:'h7'}],xp:50},
-
   {id:'H6',title:'Odkryty atak — goniec i wieża',diff:'hard',rating:1800,goal:'material',
    hint:'Goniec bierze f7 z szachem, wieża bierze hetmana',
    fen:'3qk3/8/8/8/2B5/8/8/3R2K1 w - - 0 1',
    sol:[{from:'c4',to:'f7'},{from:'e8',to:'f7'},{from:'d1',to:'d8'}],xp:50},
-
   {id:'H7',title:'Blokada i mat',diff:'hard',rating:1840,goal:'mat',
    hint:'He6+ Kh8 Hxf8#',
    fen:'5r1k/8/3Q4/8/8/8/8/4R1K1 w - - 0 1',
    sol:[{from:'d6',to:'h6'},{from:'h8',to:'g8'},{from:'h6',to:'g7'}],xp:50},
-
   {id:'H8',title:'Ofiara wieży mat w 2',diff:'hard',rating:1880,goal:'mat',
    hint:'Wh8+! Kxh8 Hh7#',
    fen:'6k1/7R/6Q1/8/8/8/8/6K1 w - - 0 1',
    sol:[{from:'h7',to:'h8'},{from:'g8',to:'h8'},{from:'g6',to:'h7'}],xp:50},
-
   {id:'H9',title:'Mat w 2 — hetman i wieża',diff:'hard',rating:1920,goal:'mat',
    hint:'Hh7+ Kf8 Hf7#',
    fen:'6k1/8/7K/7Q/8/8/5R2/8 w - - 0 1',
    sol:[{from:'h5',to:'h7'},{from:'g8',to:'f8'},{from:'h7',to:'f7'}],xp:50},
-
   {id:'H10',title:'Kombinacja skoczka i hetmana',diff:'hard',rating:1960,goal:'mat',
    hint:'Sh6+! Kh8 Hf7#',
    fen:'4r1k1/5N2/8/7Q/8/8/8/6K1 w - - 0 1',
@@ -811,7 +771,18 @@ function snd(type){
 
 function getUsers(){try{return JSON.parse(localStorage.getItem('spUsers4')||'[]')}catch{return[]}}
 function saveUsers(u){localStorage.setItem('spUsers4',JSON.stringify(u))}
-function switchAuthTab(t){['login','register'].forEach(x=>{document.getElementById('tab'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('act',x===t)});document.getElementById('loginForm').style.display=t==='login'?'':'none';document.getElementById('registerForm').style.display=t==='register'?'':'none';const e=document.getElementById('authErr');e.textContent='';e.classList.remove('show')}
+
+// ✅ NAPRAWIONA FUNKCJA — poprawne ID elementów tabLogin i tabReg
+function switchAuthTab(t){
+  document.getElementById('tabLogin').classList.toggle('act', t==='login');
+  document.getElementById('tabReg').classList.toggle('act', t==='register');
+  document.getElementById('loginForm').style.display=t==='login'?'':'none';
+  document.getElementById('registerForm').style.display=t==='register'?'':'none';
+  const e=document.getElementById('authErr');
+  e.textContent='';
+  e.classList.remove('show');
+}
+
 function authErr(m){const e=document.getElementById('authErr');e.textContent=m;e.classList.add('show')}
 function doLogin(){const u=document.getElementById('loginUser').value.trim(),p=document.getElementById('loginPass').value;if(!u||!p){authErr('Wpisz dane');return}const found=getUsers().find(x=>x.username.toLowerCase()===u.toLowerCase());if(!found){authErr('Nie znaleziono konta');return}if(found.password!==btoa(p)){authErr('Błędne hasło');return}startSession(found)}
 function doRegister(){const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPass').value,pass2=document.getElementById('regPass2').value;if(name.length<3||name.length>20){authErr('Nazwa: 3-20 znaków');return}if(!/\S+@\S+\.\S+/.test(email)){authErr('Zły e-mail');return}if(pass.length<6){authErr('Min. 6 znaków');return}if(pass!==pass2){authErr('Hasła różne');return}const users=getUsers();if(users.find(x=>x.username.toLowerCase()===name.toLowerCase())){authErr('Nazwa zajęta');return}const nu={username:name,email,password:btoa(pass)};users.push(nu);saveUsers(users);startSession(nu)}
