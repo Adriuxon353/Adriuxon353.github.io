@@ -614,7 +614,7 @@ function buildPiecePreviewHTML(skinId,col,pType){
 }
 
 // ================================================================
-// PUZZLES — zamienione miejscami 2 i 3 z 4 i 5
+// PUZZLES
 // ================================================================
 const PUZZLES = [
   // ===== ZAD 1: Mat hetmanem Qc7# =====
@@ -647,35 +647,35 @@ const PUZZLES = [
    fen:'8/8/4k1q1/8/5P2/2N5/8/3K4 w - - 0 1',
    sol:[{from:'f4',to:'f5'},{from:'e6',to:'e5'},{from:'c3',to:'g6'}],xp:10},
 
-  // ===== ZAD 6 =====
-  {id:'E6',title:'Mat hetmanem g8',diff:'easy',rating:910,goal:'mat',
-   hint:'Hetman na g8',
-   fen:'7k/6Q1/7K/8/8/8/8/8 w - - 0 1',
-   sol:[{from:'g7',to:'g8'}],xp:10},
+  // ===== ZAD 6: Mat na ostatniej linii — Wxd8+ =====
+  {id:'E6',title:'Mat na ostatniej linii',diff:'easy',rating:910,goal:'mat',
+   hint:'Wieża bije na d8 z szachem, czarna wieża musi bić, potem Wh8#',
+   fen:'3rk3/8/8/8/8/8/8/3R3R w - - 0 1',
+   sol:[{from:'d1',to:'d8'},{from:'d8',to:'d8'},{from:'h1',to:'h8'}],xp:10},
 
-  // ===== ZAD 7 =====
-  {id:'E7',title:'Wieża zbija skoczka',diff:'easy',rating:930,goal:'material',
-   hint:'Wieża bierze skoczka',
-   fen:'6k1/8/8/4n3/8/8/8/4R1K1 w - - 0 1',
-   sol:[{from:'e1',to:'e5'}],xp:10},
+  // ===== ZAD 7: Współpraca Hetmana i Skoczka — mat zduszony =====
+  {id:'E7',title:'Hetman i Skoczek — mat zduszony',diff:'easy',rating:930,goal:'mat',
+   hint:'Hh7+ Sxh7, potem Sf7# — klasyczny mat zduszony!',
+   fen:'5N1k/8/8/8/3Q4/8/8/6K1 w - - 0 1',
+   sol:[{from:'d4',to:'h7'},{from:'h8',to:'h7'},{from:'f8',to:'f7'}],xp:10},
 
-  // ===== ZAD 8 =====
-  {id:'E8',title:'Promocja pionka',diff:'easy',rating:950,goal:'material',
-   hint:'Pion promuje na hetmana',
-   fen:'7k/P7/8/8/8/8/8/6K1 w - - 0 1',
-   sol:[{from:'a7',to:'a8'}],xp:10},
+  // ===== ZAD 8: Bateria Goniec + Hetman — ofiara hetmana =====
+  {id:'E8',title:'Bateria Goniec + Hetman',diff:'easy',rating:950,goal:'mat',
+   hint:'Hg7+ Kxg7, potem Gf6# — ofiara hetmana odsłania gońca!',
+   fen:'6k1/8/8/1B4Q1/8/8/8/6K1 w - - 0 1',
+   sol:[{from:'g5',to:'g7'},{from:'g8',to:'g7'},{from:'b5',to:'f9'}],xp:10},
 
-  // ===== ZAD 9 =====
-  {id:'E9',title:'Szach i zbicie wieży',diff:'easy',rating:970,goal:'material',
-   hint:'Hetman daje szach, potem bierze wieżę',
-   fen:'3r2k1/8/8/1Q6/8/8/8/6K1 w - - 0 1',
-   sol:[{from:'b5',to:'d7'},{from:'d8',to:'e8'},{from:'d7',to:'d8'}],xp:10},
+  // ===== ZAD 9: Mat Arabski — ofiara hetmana =====
+  {id:'E9',title:'Mat Arabski',diff:'easy',rating:970,goal:'mat',
+   hint:'Hxh7+! Kxh7, potem Wh1+ Kg8, Wh8#',
+   fen:'6k1/7p/5N2/7Q/8/8/8/6RK w - - 0 1',
+   sol:[{from:'h5',to:'h7'},{from:'h8',to:'h7'},{from:'g1',to:'h1'},{from:'h7',to:'g8'},{from:'h1',to:'h8'}],xp:10},
 
-  // ===== ZAD 10 =====
-  {id:'E10',title:'Mat hetmanem',diff:'easy',rating:1000,goal:'mat',
-   hint:'Hetman na a7',
-   fen:'k7/1r6/2K5/8/8/8/8/Q7 w - - 0 1',
-   sol:[{from:'a1',to:'a7'}],xp:10},
+  // ===== ZAD 10: Mat na ostatniej linii z odciągnięciem =====
+  {id:'E10',title:'Ofiara hetmana na ostatniej linii',diff:'easy',rating:1000,goal:'mat',
+   hint:'Hxd8+! Wxd8, Wxd8+ He8 (zasłona), Wxe8#',
+   fen:'3qr1k1/8/8/8/8/8/8/3QR1K1 w - - 0 1',
+   sol:[{from:'d1',to:'d8'},{from:'d8',to:'d8'},{from:'e1',to:'d8'},{from:'e8',to:'e1'},{from:'d8',to:'e8'}],xp:10},
 
   // ===== ZADANIA ŚREDNIE (M1-M10) =====
   {id:'M1',title:'Mat w 2',diff:'medium',rating:1200,goal:'mat',
@@ -888,4 +888,4 @@ function confetti(n=20){const cols=['#ffd700','#ff6b35','#00e5ff','#9c27b0','#4c
 document.querySelectorAll('.mover').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
 </script>
 </body>
-      </html>
+</html>
